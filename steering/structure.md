@@ -5,7 +5,7 @@
 This document defines the architectural patterns, directory organization, and structural conventions for MUSUHI 2.0, a next-generation Specification Driven Development (SDD) framework. It serves as the single source of truth for how the project is organized.
 
 **Last Updated**: 2025-11-16
-**Status**: Phase 5 Complete - All 8 features delivered, 679/683 tests passing (99.4%)
+**Status**: Phase 5 Near Complete - All 8 features delivered, 717/718 tests passing (99.9%)
 
 ## Organization Philosophy
 
@@ -43,6 +43,7 @@ packages/
 ```
 
 **Benefits**:
+
 - Shared code reuse through `workspace:*` protocol
 - Type-safe cross-package imports
 - Single `pnpm build` compiles all packages in dependency order
@@ -65,6 +66,7 @@ packages/
 ```
 
 **Convention**:
+
 - Package name: `@musuhi/<feature-name>`
 - Main export: `packages/<feature-name>/src/index.ts`
 - Tests: `packages/<feature-name>/src/__tests__/*.test.ts`
@@ -127,6 +129,7 @@ Project Root/
 ```
 
 **Rationale**:
+
 - Version control friendly (Git-based collaboration)
 - Human-readable and editable
 - AI-parseable (LLMs can read/write Markdown/YAML)
@@ -152,6 +155,7 @@ Core Framework (Platform-Agnostic)
 ```
 
 **Adapter Responsibilities**:
+
 - Translate MUSUHI commands to platform-specific APIs
 - Handle platform-specific file access
 - Manage LLM context windows
@@ -164,10 +168,13 @@ Core Framework (Platform-Agnostic)
 ```typescript
 // Central event bus (packages/core/src/events/event-bus.ts)
 EventBus.emit('workflow:stage-changed', { stage: 'requirements' });
-EventBus.on('task:completed', (task) => { /* update dashboard */ });
+EventBus.on('task:completed', (task) => {
+  /* update dashboard */
+});
 ```
 
 **Events**:
+
 - `workflow:*` - Workflow state changes
 - `task:*` - Task execution events
 - `agent:*` - Agent activity
@@ -175,6 +182,7 @@ EventBus.on('task:completed', (task) => { /* update dashboard */ });
 - `gap:*` - Gap detection results
 
 **Benefits**:
+
 - Decoupled feature packages
 - Real-time dashboard updates
 - Extensibility (new features can listen to existing events)
@@ -331,6 +339,7 @@ packages/constitutional-governance/
 ```
 
 **Exceptions**:
+
 - `README.md`, `CLAUDE.md`, `CONTRIBUTING.md` (all caps for documentation)
 - `.eslintrc.json`, `.prettierrc.json` (dotfiles)
 
@@ -372,12 +381,12 @@ packages/constitutional-governance/
 
 ```typescript
 // Interfaces, Types, Classes: PascalCase
-interface EARSRequirement { }
+interface EARSRequirement {}
 type WorkflowStage = 'research' | 'requirements';
-class ConstitutionLoader { }
+class ConstitutionLoader {}
 
 // Functions, variables, parameters: camelCase
-function validateEARS(requirement: string): boolean { }
+function validateEARS(requirement: string): boolean {}
 const workflowStage = 'requirements';
 
 // Constants (top-level): SCREAMING_SNAKE_CASE
@@ -390,8 +399,8 @@ class Example {
 }
 
 // Test files: *.test.ts
-constitution-loader.test.ts
-ears-validator.test.ts
+constitution - loader.test.ts;
+ears - validator.test.ts;
 ```
 
 ### Documentation File Naming
@@ -424,6 +433,7 @@ export * from './types.js';
 ```
 
 **Benefits**:
+
 - Single import point: `import { PhaseGate } from '@musuhi/constitutional-governance';`
 - Hide internal implementation details
 - Easy to refactor internals without breaking consumers
@@ -441,6 +451,7 @@ export * from './types.js';
 ```
 
 **Benefits**:
+
 - Always uses latest local version during development
 - pnpm replaces with actual version on publish
 
@@ -463,7 +474,9 @@ import { EARSValidator } from '../../core/src/validators/ears-validator';
   "compilerOptions": {
     "paths": {
       "@musuhi/core": ["./packages/core/src"],
-      "@musuhi/constitutional-governance": ["./packages/constitutional-governance/src"]
+      "@musuhi/constitutional-governance": [
+        "./packages/constitutional-governance/src"
+      ]
     }
   }
 }
@@ -497,10 +510,11 @@ import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 
 // ❌ Bad: Custom Markdown parser
-class CustomMarkdownParser { }
+class CustomMarkdownParser {}
 ```
 
 **Approved Libraries** (see `steering/tech.md`):
+
 - Markdown: `unified`, `remark-parse`, `remark-gfm`
 - YAML: `yaml`
 - CLI: `commander`
@@ -523,6 +537,7 @@ packages/core/
 ```
 
 **Convention**:
+
 - Test file: `<feature>.test.ts` (not `<feature>.spec.ts`)
 - Test location: `__tests__/` folder next to implementation
 - Test ratio: 3:1 (3 tests per acceptance criterion)
@@ -546,6 +561,7 @@ packages/core/
 ```
 
 **Benefits**:
+
 - Catch errors at compile time
 - Self-documenting code
 - Better IDE support
@@ -580,7 +596,7 @@ class ConstitutionLoader {
 // ❌ Bad: Hard-coded dependencies
 class ConstitutionLoader {
   constructor() {
-    this.fileSystem = new NodeFileSystem();  // Hard to test
+    this.fileSystem = new NodeFileSystem(); // Hard to test
   }
 }
 ```
@@ -633,6 +649,7 @@ coverage: {
 ```
 
 **Coverage Exclusions**:
+
 - `node_modules/`, `dist/`
 - `*.config.{js,ts}`
 - `*.d.ts` (type declarations)
@@ -685,6 +702,7 @@ pnpm publish:all
 ```
 
 **Versioning Scheme**:
+
 - Major (1.0.0): Breaking API changes
 - Minor (0.1.0): New features (backward compatible)
 - Patch (0.0.1): Bug fixes
@@ -696,6 +714,7 @@ pnpm publish:all
 **Scope**: `@musuhi/*`
 
 **Process**:
+
 1. CI passes (lint, build, test, security audit)
 2. Version bump (synchronized)
 3. Git tag (e.g., `v0.1.0`)
@@ -748,17 +767,17 @@ packages/core → packages/cli → packages/core  // ❌ Circular
 ```typescript
 // ❌ Bad: ConstitutionManager does everything
 class ConstitutionManager {
-  loadConstitution() { }
-  parseArticles() { }
-  validateRules() { }
-  generateReport() { }
+  loadConstitution() {}
+  parseArticles() {}
+  validateRules() {}
+  generateReport() {}
 }
 
 // ✅ Good: Separate responsibilities
-class ConstitutionLoader { }
-class ArticleParser { }
-class ValidationRuleEngine { }
-class ValidationReportGenerator { }
+class ConstitutionLoader {}
+class ArticleParser {}
+class ValidationRuleEngine {}
+class ValidationReportGenerator {}
 ```
 
 ## References
