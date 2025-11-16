@@ -1,0 +1,45 @@
+{
+  "name": "@musuhi/adapter-vscode-copilot",
+  "version": "0.1.0",
+  "description": "VS Code + GitHub Copilot adapter for MUSUHI 2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsc --build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "keywords": [
+    "musuhi",
+    "adapter",
+    "vscode",
+    "copilot"
+  ],
+  "author": "MUSUHI Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "@musuhi/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.1"
+  }
+}

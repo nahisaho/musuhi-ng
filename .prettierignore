@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Coverage
+coverage/
+
+# Git LFS files
+References/ag2/website/package-lock.json
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

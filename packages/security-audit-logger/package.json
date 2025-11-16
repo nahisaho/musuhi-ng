@@ -1,0 +1,51 @@
+{
+  "name": "@musuhi/security-audit-logger",
+  "version": "0.1.0",
+  "description": "Security audit logging for MUSUHI",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "security",
+    "audit",
+    "logging",
+    "musuhi"
+  ],
+  "author": "MUSUHI Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "typescript": "^5.9.3",
+    "vitest": "^1.6.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/musuhi/musuhi2.git",
+    "directory": "packages/security-audit-logger"
+  },
+  "bugs": {
+    "url": "https://github.com/musuhi/musuhi2/issues"
+  },
+  "homepage": "https://musuhi.github.io/musuhi2",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

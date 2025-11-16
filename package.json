@@ -1,0 +1,56 @@
+{
+  "name": "@musuhi/monorepo",
+  "version": "0.1.0",
+  "description": "MUSUHI 2.0 - Specification Driven Development Framework",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "test:coverage": "pnpm -r run test:coverage",
+    "lint": "pnpm -r run lint",
+    "lint:fix": "pnpm -r run lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yaml,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md,yaml,yml}\"",
+    "typecheck": "pnpm -r run typecheck",
+    "prepare": "husky install",
+    "clean": "pnpm -r run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "esbuild": "^0.27.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4",
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.9"
+  },
+  "keywords": [
+    "sdd",
+    "specification-driven-development",
+    "ai-assisted-development",
+    "ears",
+    "constitutional-governance",
+    "multi-agent-orchestration"
+  ],
+  "author": "MUSUHI Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/musuhi/musuhi2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/musuhi/musuhi2/issues"
+  },
+  "homepage": "https://github.com/musuhi/musuhi2#readme"
+}

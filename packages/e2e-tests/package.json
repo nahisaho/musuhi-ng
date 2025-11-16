@@ -1,0 +1,42 @@
+{
+  "name": "@musuhi/e2e-tests",
+  "version": "0.1.0",
+  "description": "End-to-End tests for MUSUHI 2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
+  },
+  "dependencies": {
+    "@musuhi/core": "workspace:*",
+    "@musuhi/constitutional-governance": "workspace:*",
+    "@musuhi/change-workflow": "workspace:*",
+    "@musuhi/multi-agent-orchestrator": "workspace:*",
+    "@musuhi/parallel-executor": "workspace:*",
+    "@musuhi/gap-analyzer": "workspace:*",
+    "@musuhi/dashboard": "workspace:*",
+    "@musuhi/iterative-verification": "workspace:*",
+    "@musuhi/platform-adapters": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@vitest/coverage-v8": "^1.2.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "keywords": [
+    "e2e-tests",
+    "musuhi",
+    "sdd"
+  ],
+  "author": "MUSUHI Contributors",
+  "license": "MIT"
+}

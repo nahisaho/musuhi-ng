@@ -1,0 +1,66 @@
+{
+  "name": "@musuhi/core",
+  "version": "0.1.0",
+  "description": "Core framework and types for MUSUHI 2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsc --build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "keywords": [
+    "musuhi",
+    "sdd",
+    "specification-driven-development"
+  ],
+  "author": "MUSUHI Contributors",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/mdast": "^4.0.3",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.1"
+  },
+  "dependencies": {
+    "glob": "^10.3.10",
+    "mdast-util-from-markdown": "^2.0.0",
+    "mdast-util-to-markdown": "^2.1.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.4",
+    "yaml": "^2.3.4"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/musuhi/musuhi2.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/musuhi/musuhi2/issues"
+  },
+  "homepage": "https://musuhi.github.io/musuhi2"
+}

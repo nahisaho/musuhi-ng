@@ -1,0 +1,59 @@
+{
+  "name": "@musuhi/iterative-verification",
+  "version": "0.1.0",
+  "description": "Task-by-task execution with human review checkpoints for early error detection",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "keywords": [
+    "musuhi",
+    "sdd",
+    "iterative-verification",
+    "task-by-task",
+    "human-in-the-loop",
+    "early-error-detection"
+  ],
+  "author": "MUSUHI Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "@musuhi/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/musuhi/musuhi2.git",
+    "directory": "packages/iterative-verification"
+  },
+  "bugs": {
+    "url": "https://github.com/musuhi/musuhi2/issues"
+  },
+  "homepage": "https://musuhi.github.io/musuhi2",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

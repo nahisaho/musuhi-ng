@@ -1,0 +1,57 @@
+{
+  "name": "@musuhi/change-workflow",
+  "version": "0.1.0",
+  "description": "8-stage SDD workflow engine for MUSUHI 2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsc --build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "keywords": [
+    "musuhi",
+    "workflow",
+    "sdd"
+  ],
+  "author": "MUSUHI Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "@musuhi/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/musuhi/musuhi2.git",
+    "directory": "packages/change-workflow"
+  },
+  "bugs": {
+    "url": "https://github.com/musuhi/musuhi2/issues"
+  },
+  "homepage": "https://musuhi.github.io/musuhi2"
+}

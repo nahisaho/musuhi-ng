@@ -1,0 +1,21 @@
+packages:
+  # Core framework package
+  - 'packages/core'
+
+  # CLI package
+  - 'packages/cli'
+
+  # TUI Dashboard package
+  - 'packages/dashboard'
+
+  # Platform adapters
+  - 'packages/adapters/*'
+
+  # Feature packages
+  - 'packages/constitutional-governance'
+  - 'packages/change-workflow'
+  - 'packages/multi-agent-orchestrator'
+  - 'packages/parallel-executor'
+  - 'packages/gap-analyzer'
+  - 'packages/verification-engine'
+  - 'packages/iterative-verification'

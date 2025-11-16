@@ -1,0 +1,58 @@
+{
+  "name": "@musuhi/gap-analyzer",
+  "version": "0.1.0",
+  "description": "Brownfield gap analysis for MUSUHI 2.0 - Feature 5",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "musuhi",
+    "gap-analysis",
+    "brownfield",
+    "requirements",
+    "ast",
+    "traceability"
+  ],
+  "author": "MUSUHI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@musuhi/core": "workspace:*",
+    "ts-morph": "^21.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.7.2",
+    "vitest": "^1.6.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/musuhi/musuhi2.git",
+    "directory": "packages/gap-analyzer"
+  },
+  "bugs": {
+    "url": "https://github.com/musuhi/musuhi2/issues"
+  },
+  "homepage": "https://musuhi.github.io/musuhi2"
+}

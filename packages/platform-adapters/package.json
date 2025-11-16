@@ -1,0 +1,69 @@
+{
+  "name": "@musuhi/platform-adapters",
+  "version": "2.0.0",
+  "description": "Multi-platform AI integration adapters for MUSUHI 2.0 SDD framework",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "musuhi",
+    "sdd",
+    "specification-driven-development",
+    "ai-platform",
+    "multi-platform",
+    "platform-adapter",
+    "claude-code",
+    "cursor",
+    "vscode",
+    "copilot"
+  ],
+  "author": "MUSUHI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@musuhi/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/musuhi/musuhi2.git",
+    "directory": "packages/platform-adapters"
+  },
+  "bugs": {
+    "url": "https://github.com/musuhi/musuhi2/issues"
+  },
+  "homepage": "https://musuhi.github.io/musuhi2",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

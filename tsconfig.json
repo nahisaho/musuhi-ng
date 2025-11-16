@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    // Language and Environment
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    // Emit
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "removeComments": true,
+
+    // Interop Constraints
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+
+    // Type Checking
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": false,
+
+    // Skip type checking for node_modules
+    "skipLibCheck": true,
+
+    // Paths (for monorepo)
+    "baseUrl": ".",
+    "paths": {
+      "@musuhi/core": ["./packages/core/src"],
+      "@musuhi/cli": ["./packages/cli/src"],
+      "@musuhi/dashboard": ["./packages/dashboard/src"],
+      "@musuhi/constitutional-governance": ["./packages/constitutional-governance/src"],
+      "@musuhi/change-workflow": ["./packages/change-workflow/src"],
+      "@musuhi/multi-agent-orchestrator": ["./packages/multi-agent-orchestrator/src"],
+      "@musuhi/parallel-executor": ["./packages/parallel-executor/src"],
+      "@musuhi/gap-analyzer": ["./packages/gap-analyzer/src"],
+      "@musuhi/verification-engine": ["./packages/verification-engine/src"]
+    }
+  },
+  "include": ["packages/*/src/**/*"],
+  "exclude": ["node_modules", "dist", "**/dist", "**/node_modules"]
+}
