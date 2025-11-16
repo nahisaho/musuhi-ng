@@ -1,5 +1,5 @@
 {
-  "name": "@musuhi/gap-analyzer",
+  "name": "@musuhi-ng/gap-analyzer",
   "version": "0.1.0",
   "description": "Brownfield gap analysis for MUSUHI 2.0 - Feature 5",
   "type": "module",
@@ -34,7 +34,7 @@
   "author": "MUSUHI Team",
   "license": "MIT",
   "dependencies": {
-    "@musuhi/core": "workspace:*",
+    "@musuhi-ng/core": "workspace:*",
     "ts-morph": "^21.0.1"
   },
   "devDependencies": {

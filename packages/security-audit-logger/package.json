@@ -1,5 +1,5 @@
 {
-  "name": "@musuhi/security-audit-logger",
+  "name": "@musuhi-ng/security-audit-logger",
   "version": "0.1.0",
   "description": "Security audit logging for MUSUHI",
   "type": "module",

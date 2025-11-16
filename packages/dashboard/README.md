@@ -1,4 +1,4 @@
-# @musuhi/dashboard
+# @musuhi-ng/dashboard
 
 Terminal UI (TUI) Dashboard for MUSUHI 2.0
 
@@ -15,18 +15,21 @@ This package provides a blessed-contrib-based terminal dashboard for visualizing
 **Completed Components** (as of 2025-11-16):
 
 ✅ **Type Definitions** (100% complete):
+
 - `types/workflow.ts` - WorkflowStage, StageProgress, workflow utilities
 - `types/agent-status.ts` - AgentStatus, PWaveStatus, WaveProgress
 - `types/dashboard.ts` - DashboardState, Change, Spec, LogEntry
 - `types/index.ts` - Type exports barrel
 
 ✅ **Core Components** (100% complete):
+
 - `core/event-bus.ts` - Real-time event broadcasting (AC-6.7)
 - `core/refresh-timer.ts` - 2-second refresh cycle (AC-6.7)
 - `core/navigation-handler.ts` - Keyboard navigation (AC-6.8, AC-6.9)
 - `core/index.ts` - Core exports barrel
 
 ✅ **Tests** (100% coverage for completed components):
+
 - `__tests__/event-bus.test.ts` - 8 tests, 100% coverage
 - `__tests__/refresh-timer.test.ts` - 10 tests, 100% coverage, NFR-P.1 validation
 - `__tests__/navigation-handler.test.ts` - 15 tests, 100% coverage
@@ -34,6 +37,7 @@ This package provides a blessed-contrib-based terminal dashboard for visualizing
 **Remaining Components** (to be implemented):
 
 📋 **View Components** (Placeholder status):
+
 - `views/workflow-status-view.ts` - AC-6.2 (Workflow Status View)
 - `views/active-changes-view.ts` - AC-6.3 (Active Changes View)
 - `views/current-specs-view.ts` - AC-6.4 (Current Specs View)
@@ -43,9 +47,11 @@ This package provides a blessed-contrib-based terminal dashboard for visualizing
 - `views/index.ts` - View exports barrel
 
 📋 **Main Dashboard** (Placeholder status):
+
 - `dashboard-tui.ts` - AC-6.1 (Dashboard Launch, integration)
 
 📋 **Integration Tests** (Pending):
+
 - `__tests__/dashboard-tui.test.ts` - End-to-end TUI tests
 
 ## Architecture
@@ -118,7 +124,7 @@ import {
   RefreshTimer,
   NavigationHandler,
   type DashboardState,
-} from '@musuhi/dashboard';
+} from '@musuhi-ng/dashboard';
 
 // Create event bus for real-time updates (AC-6.7)
 const eventBus = new EventBus();
@@ -188,11 +194,13 @@ pnpm test:watch
 ## Dependencies
 
 **Production**:
-- `@musuhi/core` - Core framework types
+
+- `@musuhi-ng/core` - Core framework types
 - `blessed` - TUI framework (for view components)
 - `blessed-contrib` - TUI widgets (for view components)
 
 **Development**:
+
 - `@types/blessed` - TypeScript definitions
 - `@types/node` - Node.js types
 - `typescript` - Type-safe development
@@ -219,7 +227,7 @@ pnpm test:watch
    - Keyboard interaction tests
 
 4. **CLI Integration**:
-   - Add `musuhi view` command to @musuhi/cli
+   - Add `musuhi view` command to @musuhi-ng/cli
    - Launch dashboard from CLI
 
 ## License

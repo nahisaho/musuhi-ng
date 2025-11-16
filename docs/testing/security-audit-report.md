@@ -32,11 +32,11 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
 
 ### Remediation Summary
 
-| Category | Finding | Severity | Status |
-|----------|---------|----------|--------|
-| A06 | xml2js prototype pollution (dev dependency) | Medium | ⚠️ **Review** - Non-production impact |
-| A06 | esbuild ReDoS vulnerability (dev dependency) | Medium | ⚠️ **Review** - Non-production impact |
-| Constitutional | File permissions on constitution.md not enforced | Low | ⚠️ **Recommend** - Manual enforcement needed |
+| Category       | Finding                                          | Severity | Status                                       |
+| -------------- | ------------------------------------------------ | -------- | -------------------------------------------- |
+| A06            | xml2js prototype pollution (dev dependency)      | Medium   | ⚠️ **Review** - Non-production impact        |
+| A06            | esbuild ReDoS vulnerability (dev dependency)     | Medium   | ⚠️ **Review** - Non-production impact        |
+| Constitutional | File permissions on constitution.md not enforced | Low      | ⚠️ **Recommend** - Manual enforcement needed |
 
 ---
 
@@ -83,6 +83,7 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
    - **Vulnerability**: ⚠️ **MEDIUM** - Missing path traversal protection
    - **Attack Vector**: `readFile('../../../../etc/passwd')` could access system files
    - **Mitigation**: Add project root validation:
+
      ```typescript
      async readFile(filePath: string, options?: ReadOptions): Promise<ReadResult> {
        const projectRoot = process.cwd();
@@ -152,9 +153,15 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
    - **Evidence**: Only platform detection environment variables used:
      ```typescript
      // packages/core/src/config/config-loader.ts
-     if (process.env.CLAUDE_CODE) { platform = 'claude-code'; }
-     if (process.env.CURSOR_IDE) { platform = 'cursor'; }
-     if (process.env.VSCODE_PID || process.env.VSCODE_IPC_HOOK) { platform = 'vscode'; }
+     if (process.env.CLAUDE_CODE) {
+       platform = 'claude-code';
+     }
+     if (process.env.CURSOR_IDE) {
+       platform = 'cursor';
+     }
+     if (process.env.VSCODE_PID || process.env.VSCODE_IPC_HOOK) {
+       platform = 'vscode';
+     }
      ```
    - **Finding**: No sensitive credentials stored
 
@@ -166,12 +173,12 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
 
 #### Encryption Status
 
-| Data Type | At Rest | In Transit | Compliant |
-|-----------|---------|------------|-----------|
-| Configuration | N/A (not implemented) | N/A (local) | ✅ Yes |
-| Steering Files | Plaintext (intended) | N/A (local) | ✅ Yes |
-| Specs | Plaintext (intended) | N/A (local) | ✅ Yes |
-| Logs | Plaintext (intended) | N/A (local) | ✅ Yes |
+| Data Type      | At Rest               | In Transit  | Compliant |
+| -------------- | --------------------- | ----------- | --------- |
+| Configuration  | N/A (not implemented) | N/A (local) | ✅ Yes    |
+| Steering Files | Plaintext (intended)  | N/A (local) | ✅ Yes    |
+| Specs          | Plaintext (intended)  | N/A (local) | ✅ Yes    |
+| Logs           | Plaintext (intended)  | N/A (local) | ✅ Yes    |
 
 #### Recommendations
 
@@ -213,6 +220,7 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
    - **Method**: Test YAML parser with attack vectors
    - **Result**: ✅ PASSED
    - **Test Vectors**:
+
      ```yaml
      # Attack 1: Object injection
      !!python/object/apply:os.system ["rm -rf /"]
@@ -221,13 +229,16 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
      !!js/function >
        function() { require('child_process').exec('malicious command'); }
      ```
+
    - **Evidence**: YAML parser uses `yaml` package (safe by default):
+
      ```typescript
      // packages/core/src/parsers/yaml-parser.ts
      import { parse, stringify } from 'yaml';
 
      parse(yamlContent); // No custom tags enabled (safe)
      ```
+
    - **Security**: `yaml` package defaults to safe mode (no custom tags)
 
 3. **Markdown Injection (XSS)**
@@ -237,7 +248,8 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
    - **Test Vectors**:
      ```markdown
      <script>alert('XSS')</script>
-     [Click me](javascript:alert('XSS'))
+
+     [Click me](<javascript:alert('XSS')>)
      ![Image](x" onerror="alert('XSS'))
      ```
    - **Evidence**: Markdown is processed as text (no HTML rendering in CLI/TUI)
@@ -250,9 +262,9 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
    - **Result**: ⚠️ **PARTIALLY PASSED**
    - **Test Vectors**:
      ```typescript
-     fileSystem.readFile('"; rm -rf /; "')
-     fileSystem.readFile('$(whoami)')
-     fileSystem.readFile('`cat /etc/passwd`')
+     fileSystem.readFile('"; rm -rf /; "');
+     fileSystem.readFile('$(whoami)');
+     fileSystem.readFile('`cat /etc/passwd`');
      ```
    - **Evidence**: File operations use Node.js `fs` module (safe against command injection)
    - **But**: No input validation on file paths (see A01 path traversal)
@@ -287,9 +299,9 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
    - **Method**: Review package architecture
    - **Result**: ✅ PASSED
    - **Evidence**: 11 packages with clear boundaries:
-     - `@musuhi/constitutional-governance` (enforcement)
-     - `@musuhi/change-workflow` (change management)
-     - `@musuhi/core` (utilities)
+     - `@musuhi-ng/constitutional-governance` (enforcement)
+     - `@musuhi-ng/change-workflow` (change management)
+     - `@musuhi-ng/core` (utilities)
      - 8 platform adapters (isolation)
    - **Design**: Minimal shared state, functional design
 
@@ -438,18 +450,22 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
 #### Recommendations
 
 1. **MEDIUM PRIORITY**: Update xml2js to >=0.5.0
+
    ```bash
    # Check if blessed-contrib can update to newer xml2js
    pnpm why xml2js
    pnpm update xml2js
    ```
+
    - **If update fails**: Replace `map-canvas` widget or remove geo maps from dashboard
    - **Acceptable Risk**: Low (dashboard is local-only, no remote XML input)
 
 2. **LOW PRIORITY**: Update esbuild via Vitest update
+
    ```bash
    pnpm update vitest vite
    ```
+
    - **Note**: Dev-only dependency, no production impact
 
 3. **ONGOING**: Enable Dependabot alerts
@@ -585,6 +601,7 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
 #### Recommendations
 
 1. **HIGH PRIORITY**: Implement Phase -1 Gate audit logging
+
    ```typescript
    // Save validation results to log file
    await fs.writeFile(
@@ -702,28 +719,28 @@ MUSUHI 2.0 has successfully passed comprehensive security audit with **zero crit
 
 ### Input Validation
 
-| Component | Input Type | Validation | Status |
-|-----------|------------|------------|--------|
-| YAML Parser | YAML text | `yaml` package (safe mode) | ✅ Secure |
-| Markdown Parser | Markdown text | `unified/remark` (AST-based) | ✅ Secure |
-| File Paths | String | ⚠️ No validation | ⚠️ Add validation |
-| EARS Validator | Requirements text | Regex patterns | ✅ Secure |
+| Component       | Input Type        | Validation                   | Status            |
+| --------------- | ----------------- | ---------------------------- | ----------------- |
+| YAML Parser     | YAML text         | `yaml` package (safe mode)   | ✅ Secure         |
+| Markdown Parser | Markdown text     | `unified/remark` (AST-based) | ✅ Secure         |
+| File Paths      | String            | ⚠️ No validation             | ⚠️ Add validation |
+| EARS Validator  | Requirements text | Regex patterns               | ✅ Secure         |
 
 ### Code Analysis Security
 
-| Tool | Purpose | Configured | Status |
-|------|---------|------------|--------|
-| ts-morph | AST parsing | Yes | ✅ Safe (read-only) |
-| graphlib | DAG construction | Yes | ✅ Safe (pure logic) |
-| blessed | TUI rendering | Yes | ✅ Safe (terminal only) |
+| Tool     | Purpose          | Configured | Status                  |
+| -------- | ---------------- | ---------- | ----------------------- |
+| ts-morph | AST parsing      | Yes        | ✅ Safe (read-only)     |
+| graphlib | DAG construction | Yes        | ✅ Safe (pure logic)    |
+| blessed  | TUI rendering    | Yes        | ✅ Safe (terminal only) |
 
 ### Dependency Security
 
-| Category | Count | Vulnerabilities | Risk |
-|----------|-------|----------------|------|
-| Production Dependencies | 23 | 0 | 🟢 Low |
-| Dev Dependencies | 45 | 2 (moderate) | 🟡 Medium |
-| Transitive Dependencies | 312 | 2 (moderate) | 🟡 Medium |
+| Category                | Count | Vulnerabilities | Risk      |
+| ----------------------- | ----- | --------------- | --------- |
+| Production Dependencies | 23    | 0               | 🟢 Low    |
+| Dev Dependencies        | 45    | 2 (moderate)    | 🟡 Medium |
+| Transitive Dependencies | 312   | 2 (moderate)    | 🟡 Medium |
 
 ---
 
@@ -753,18 +770,18 @@ MUSUHI 2.0 **COMPLIES** with the following security standards:
 
 ### CWE Top 25 Most Dangerous Weaknesses
 
-| CWE | Weakness | Status |
-|-----|----------|--------|
-| CWE-89 | SQL Injection | ✅ N/A (no database) |
-| CWE-79 | XSS | ✅ N/A (no HTML rendering) |
-| CWE-78 | OS Command Injection | ✅ Safe (Node.js fs, no shell) |
-| CWE-434 | Unrestricted File Upload | ✅ N/A (no file upload) |
-| CWE-352 | CSRF | ✅ N/A (no web interface) |
-| CWE-22 | Path Traversal | ⚠️ **RECOMMEND** (add validation) |
-| CWE-862 | Missing Authorization | ✅ N/A (local tool) |
-| CWE-798 | Hardcoded Credentials | ✅ Passed (none found) |
-| CWE-119 | Buffer Errors | ✅ Safe (TypeScript, no manual memory) |
-| CWE-94 | Code Injection | ✅ Safe (no eval, no dynamic code) |
+| CWE     | Weakness                 | Status                                 |
+| ------- | ------------------------ | -------------------------------------- |
+| CWE-89  | SQL Injection            | ✅ N/A (no database)                   |
+| CWE-79  | XSS                      | ✅ N/A (no HTML rendering)             |
+| CWE-78  | OS Command Injection     | ✅ Safe (Node.js fs, no shell)         |
+| CWE-434 | Unrestricted File Upload | ✅ N/A (no file upload)                |
+| CWE-352 | CSRF                     | ✅ N/A (no web interface)              |
+| CWE-22  | Path Traversal           | ⚠️ **RECOMMEND** (add validation)      |
+| CWE-862 | Missing Authorization    | ✅ N/A (local tool)                    |
+| CWE-798 | Hardcoded Credentials    | ✅ Passed (none found)                 |
+| CWE-119 | Buffer Errors            | ✅ Safe (TypeScript, no manual memory) |
+| CWE-94  | Code Injection           | ✅ Safe (no eval, no dynamic code)     |
 
 ---
 

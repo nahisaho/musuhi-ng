@@ -47,7 +47,7 @@ importers:
 
   packages/adapters/claude-code:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -63,7 +63,7 @@ importers:
 
   packages/adapters/codex-cli:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -79,7 +79,7 @@ importers:
 
   packages/adapters/cursor:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -95,7 +95,7 @@ importers:
 
   packages/adapters/gemini-cli:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -111,7 +111,7 @@ importers:
 
   packages/adapters/qwen-code:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -127,7 +127,7 @@ importers:
 
   packages/adapters/vscode-copilot:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -143,7 +143,7 @@ importers:
 
   packages/adapters/windsurf:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -159,7 +159,7 @@ importers:
 
   packages/adapters/zed:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -175,7 +175,7 @@ importers:
 
   packages/change-workflow:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -191,10 +191,10 @@ importers:
 
   packages/cli:
     dependencies:
-      '@musuhi/constitutional-governance':
+      '@musuhi-ng/constitutional-governance':
         specifier: workspace:*
         version: link:../constitutional-governance
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
       chalk:
@@ -225,7 +225,7 @@ importers:
 
   packages/constitutional-governance:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -284,7 +284,7 @@ importers:
 
   packages/dashboard:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
       blessed:
@@ -309,7 +309,7 @@ importers:
 
   packages/gap-analyzer:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
       ts-morph:
@@ -328,7 +328,7 @@ importers:
 
   packages/iterative-verification:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -344,7 +344,7 @@ importers:
 
   packages/multi-agent-orchestrator:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -360,7 +360,7 @@ importers:
 
   packages/parallel-executor:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
       graphlib:
@@ -382,7 +382,7 @@ importers:
 
   packages/verification-engine:
     dependencies:
-      '@musuhi/core':
+      '@musuhi-ng/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:

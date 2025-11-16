@@ -2057,7 +2057,7 @@ This document provides a comprehensive implementation task plan for MUSUHI 2.0 b
 - **Estimated Effort**: 2 days
 - **Dependencies**: T-115 (CI/CD Pipeline)
 - **Acceptance Criteria**:
-  - Package name: @musuhi/core
+  - Package name: @musuhi-ng/core
   - Semantic versioning (v1.0.0)
   - README.md with quick start
   - Published to npm registry

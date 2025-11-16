@@ -1,5 +1,5 @@
 {
-  "name": "@musuhi/cli",
+  "name": "@musuhi-ng/cli",
   "version": "0.1.0",
   "description": "Command-line interface for MUSUHI 2.0",
   "type": "module",
@@ -37,8 +37,8 @@
   "author": "MUSUHI Contributors",
   "license": "MIT",
   "dependencies": {
-    "@musuhi/constitutional-governance": "workspace:*",
-    "@musuhi/core": "workspace:*",
+    "@musuhi-ng/constitutional-governance": "workspace:*",
+    "@musuhi-ng/core": "workspace:*",
     "chalk": "^5.3.0",
     "commander": "^12.0.0",
     "inquirer": "^9.2.0",

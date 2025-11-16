@@ -24,25 +24,34 @@ export default defineConfig({
       },
     },
     include: ['packages/**/__tests__/**/*.test.ts', 'packages/**/*.{test,spec}.ts'],
-    exclude: ['node_modules', 'dist', '.pnpm-store', '**/node_modules/**', 'packages/**/node_modules/**'],
+    exclude: [
+      'node_modules',
+      'dist',
+      '.pnpm-store',
+      '**/node_modules/**',
+      'packages/**/node_modules/**',
+    ],
   },
   resolve: {
     alias: {
-      '@musuhi/core': path.resolve(__dirname, './packages/core/src'),
-      '@musuhi/cli': path.resolve(__dirname, './packages/cli/src'),
-      '@musuhi/dashboard': path.resolve(__dirname, './packages/dashboard/src'),
-      '@musuhi/constitutional-governance': path.resolve(
+      '@musuhi-ng/core': path.resolve(__dirname, './packages/core/src'),
+      '@musuhi-ng/cli': path.resolve(__dirname, './packages/cli/src'),
+      '@musuhi-ng/dashboard': path.resolve(__dirname, './packages/dashboard/src'),
+      '@musuhi-ng/constitutional-governance': path.resolve(
         __dirname,
         './packages/constitutional-governance/src'
       ),
-      '@musuhi/change-workflow': path.resolve(__dirname, './packages/change-workflow/src'),
-      '@musuhi/multi-agent-orchestrator': path.resolve(
+      '@musuhi-ng/change-workflow': path.resolve(__dirname, './packages/change-workflow/src'),
+      '@musuhi-ng/multi-agent-orchestrator': path.resolve(
         __dirname,
         './packages/multi-agent-orchestrator/src'
       ),
-      '@musuhi/parallel-executor': path.resolve(__dirname, './packages/parallel-executor/src'),
-      '@musuhi/gap-analyzer': path.resolve(__dirname, './packages/gap-analyzer/src'),
-      '@musuhi/verification-engine': path.resolve(__dirname, './packages/verification-engine/src'),
+      '@musuhi-ng/parallel-executor': path.resolve(__dirname, './packages/parallel-executor/src'),
+      '@musuhi-ng/gap-analyzer': path.resolve(__dirname, './packages/gap-analyzer/src'),
+      '@musuhi-ng/verification-engine': path.resolve(
+        __dirname,
+        './packages/verification-engine/src'
+      ),
     },
   },
 });

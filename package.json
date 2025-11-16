@@ -1,5 +1,5 @@
 {
-  "name": "@musuhi/monorepo",
+  "name": "@musuhi-ng/monorepo",
   "version": "0.1.0",
   "description": "MUSUHI 2.0 - Specification Driven Development Framework",
   "private": true,

@@ -60,12 +60,14 @@ Validate that all 8 stages of the SDD workflow execute successfully from project
 #### Step 1: Initialize New Project
 
 **Command**:
+
 ```bash
 musuhi init test-ecommerce-app
 cd test-ecommerce-app
 ```
 
 **Expected Output**:
+
 ```
 ✓ Creating project structure...
 ✓ Generating steering files...
@@ -88,6 +90,7 @@ Next steps:
 ```
 
 **Verification**:
+
 ```typescript
 expect(fs.existsSync('steering/structure.md')).toBe(true);
 expect(fs.existsSync('steering/tech.md')).toBe(true);
@@ -105,39 +108,48 @@ expect(fs.existsSync('changes/')).toBe(true);
 **File**: `specs/user-authentication.md`
 
 **Content** (EARS format):
+
 ```markdown
 # User Authentication Specification
 
 ## Overview
+
 This specification defines user authentication functionality for the e-commerce platform.
 
 ## Requirements
 
 ### AC-1.1: User Login
+
 WHEN a user enters valid credentials, the system SHALL authenticate the user and create a session.
 
 **Acceptance Criteria**:
+
 - Valid email/password combination grants access
 - Session token generated (JWT, 24-hour expiry)
 - User redirected to dashboard
 
 ### AC-1.2: Invalid Login
+
 IF a user enters invalid credentials, THEN the system SHALL display an error message without revealing which field is incorrect.
 
 **Acceptance Criteria**:
+
 - Generic error message: "Invalid email or password"
 - No account enumeration (security)
 - Login attempt logged
 
 ### AC-1.3: Session Persistence
+
 WHILE a user has a valid session token, the system SHALL maintain authentication state.
 
 **Acceptance Criteria**:
+
 - Session persists across page reloads
 - Session expires after 24 hours
 - Logout invalidates session immediately
 
 ## Traceability
+
 - Research Finding: User authentication is critical for e-commerce security
 - Design: TBD
 - Tasks: TBD
@@ -146,11 +158,13 @@ WHILE a user has a valid session token, the system SHALL maintain authentication
 ```
 
 **Command**:
+
 ```bash
 musuhi validate specs/user-authentication.md
 ```
 
 **Expected Output**:
+
 ```
 ✓ Validating specs/user-authentication.md...
 ✓ EARS format: VALID (3 requirements)
@@ -163,6 +177,7 @@ musuhi validate specs/user-authentication.md
 ```
 
 **Verification**:
+
 ```typescript
 const validator = new EARSValidator('specs/user-authentication.md');
 const result = await validator.validate();
@@ -175,11 +190,13 @@ expect(result.requirements.length).toBe(3);
 #### Step 3: Propose Change (Stage 3: Design)
 
 **Command**:
+
 ```bash
 musuhi change init "implement-user-authentication"
 ```
 
 **Expected Output**:
+
 ```
 ✓ Creating change proposal...
 ✓ Directory created: changes/2025-11-16-implement-user-authentication/
@@ -193,18 +210,25 @@ Next steps:
 ```
 
 **Verification**:
+
 ```typescript
-expect(fs.existsSync('changes/2025-11-16-implement-user-authentication/proposal.md')).toBe(true);
-expect(fs.existsSync('changes/2025-11-16-implement-user-authentication/delta.md')).toBe(true);
+expect(
+  fs.existsSync('changes/2025-11-16-implement-user-authentication/proposal.md')
+).toBe(true);
+expect(
+  fs.existsSync('changes/2025-11-16-implement-user-authentication/delta.md')
+).toBe(true);
 ```
 
 **File**: `changes/2025-11-16-implement-user-authentication/delta.md`
 
 **Content**:
+
 ```markdown
 # Change Delta: Implement User Authentication
 
 ## ADDED
+
 - src/auth/auth-service.ts (authentication logic)
 - src/auth/session-manager.ts (session management)
 - src/models/user.ts (user model)
@@ -212,10 +236,12 @@ expect(fs.existsSync('changes/2025-11-16-implement-user-authentication/delta.md'
 - tests/auth/session-manager.test.ts (unit tests)
 
 ## MODIFIED
+
 - src/app.ts (add authentication middleware)
 - package.json (add dependencies: bcrypt, jsonwebtoken)
 
 ## REMOVED
+
 - None
 ```
 
@@ -224,17 +250,20 @@ expect(fs.existsSync('changes/2025-11-16-implement-user-authentication/delta.md'
 #### Step 4: Execute Change with Agents (Stage 4: Tasks, Stage 5: Implementation)
 
 **Command**:
+
 ```bash
 musuhi change execute "implement-user-authentication" --agents
 ```
 
 **Expected Agent Workflow**:
+
 1. **Requirements Analyst**: Reviews `specs/user-authentication.md`
 2. **System Architect**: Generates architecture design (auth service, session manager)
 3. **Software Developer**: Implements code in `src/auth/`
 4. **Test Engineer**: Generates tests in `tests/auth/`
 
 **Expected Output** (abbreviated):
+
 ```
 ✓ Starting change execution...
 ✓ Agent: Requirements Analyst
@@ -255,6 +284,7 @@ musuhi change execute "implement-user-authentication" --agents
 ```
 
 **Verification**:
+
 ```typescript
 expect(fs.existsSync('src/auth/auth-service.ts')).toBe(true);
 expect(fs.existsSync('src/auth/session-manager.ts')).toBe(true);
@@ -271,11 +301,13 @@ expect(testResults.coverage).toBeGreaterThanOrEqual(80);
 #### Step 5: Validate Constitutional Compliance (Phase -1 Gate)
 
 **Command**:
+
 ```bash
 musuhi validate changes/2025-11-16-implement-user-authentication/ --phase-gate
 ```
 
 **Expected Output**:
+
 ```
 ✓ Phase -1 Gate Validation
 ✓ Article 1 (Library-First): PASS
@@ -300,9 +332,12 @@ musuhi validate changes/2025-11-16-implement-user-authentication/ --phase-gate
 ```
 
 **Verification**:
+
 ```typescript
 const gate = new PhaseGateValidator('/project/root');
-const result = await gate.validate('changes/2025-11-16-implement-user-authentication/');
+const result = await gate.validate(
+  'changes/2025-11-16-implement-user-authentication/'
+);
 expect(result.passed).toBe(true);
 expect(result.violations).toEqual([]);
 ```
@@ -312,11 +347,13 @@ expect(result.violations).toEqual([]);
 #### Step 6: Archive Completed Change (Stage 7: Deployment)
 
 **Command**:
+
 ```bash
 musuhi change archive "implement-user-authentication"
 ```
 
 **Expected Output**:
+
 ```
 ✓ Archiving change: implement-user-authentication
 ✓ Merging delta to specs/
@@ -327,9 +364,14 @@ musuhi change archive "implement-user-authentication"
 ```
 
 **Verification**:
+
 ```typescript
-expect(fs.existsSync('archive/2025-11-16-implement-user-authentication/')).toBe(true);
-expect(fs.existsSync('changes/2025-11-16-implement-user-authentication/')).toBe(false);
+expect(fs.existsSync('archive/2025-11-16-implement-user-authentication/')).toBe(
+  true
+);
+expect(fs.existsSync('changes/2025-11-16-implement-user-authentication/')).toBe(
+  false
+);
 ```
 
 ---
@@ -337,11 +379,13 @@ expect(fs.existsSync('changes/2025-11-16-implement-user-authentication/')).toBe(
 #### Step 7: Verify All 8 Stages Executed (Stage 8: Monitoring)
 
 **Command**:
+
 ```bash
 musuhi workflow status
 ```
 
 **Expected Output**:
+
 ```
 Workflow Status for test-ecommerce-app
 
@@ -378,6 +422,7 @@ Workflow Status for test-ecommerce-app
 ```
 
 **Verification**:
+
 ```typescript
 const workflow = new WorkflowEngine('/project/root');
 const status = await workflow.getStatus();
@@ -396,16 +441,16 @@ expect(status.completedStages).toEqual([1, 2, 3, 4, 5, 6, 7]);
 
 ### Expected Results Summary
 
-| Stage | Status | Artifacts |
-|-------|--------|-----------|
-| 1. Research | ✅ Complete | steering/*.md, .musuhi/config.yaml |
-| 2. Requirements | ✅ Complete | specs/user-authentication.md |
-| 3. Design | ✅ Complete | changes/*/proposal.md, delta.md |
-| 4. Tasks | ✅ Complete | Task plan with P-wave labels |
-| 5. Implementation | ✅ Complete | src/auth/*.ts, tests/auth/*.test.ts |
-| 6. Testing | ✅ Complete | Test results (85% coverage) |
-| 7. Deployment | ✅ Complete | archive/2025-11-16-*/ |
-| 8. Monitoring | ✅ Complete | Workflow logs |
+| Stage             | Status      | Artifacts                           |
+| ----------------- | ----------- | ----------------------------------- |
+| 1. Research       | ✅ Complete | steering/\*.md, .musuhi/config.yaml |
+| 2. Requirements   | ✅ Complete | specs/user-authentication.md        |
+| 3. Design         | ✅ Complete | changes/\*/proposal.md, delta.md    |
+| 4. Tasks          | ✅ Complete | Task plan with P-wave labels        |
+| 5. Implementation | ✅ Complete | src/auth/_.ts, tests/auth/_.test.ts |
+| 6. Testing        | ✅ Complete | Test results (85% coverage)         |
+| 7. Deployment     | ✅ Complete | archive/2025-11-16-\*/              |
+| 8. Monitoring     | ✅ Complete | Workflow logs                       |
 
 ---
 
@@ -430,8 +475,9 @@ Validate all 4 primary orchestration patterns (Sequential, Group, Nested, Swarm)
 **Workflow**: Requirements Analyst → System Architect → Software Developer
 
 **Test Code**:
+
 ```typescript
-import { Orchestrator } from '@musuhi/multi-agent-orchestrator';
+import { Orchestrator } from '@musuhi-ng/multi-agent-orchestrator';
 
 test('Sequential Chat: Requirements → Design → Implementation', async () => {
   const orchestrator = new Orchestrator('/project/root');
@@ -457,6 +503,7 @@ test('Sequential Chat: Requirements → Design → Implementation', async () => 
 ```
 
 **Expected Results**:
+
 - Agent A completes requirements analysis
 - Agent B receives requirements and generates design
 - Agent C receives design and generates code
@@ -469,6 +516,7 @@ test('Sequential Chat: Requirements → Design → Implementation', async () => 
 **Workflow**: Orchestrator manages Code Reviewer, Security Auditor, Performance Optimizer
 
 **Test Code**:
+
 ```typescript
 test('Group Chat: Multi-agent code review', async () => {
   const orchestrator = new Orchestrator('/project/root');
@@ -495,6 +543,7 @@ test('Group Chat: Multi-agent code review', async () => {
 ```
 
 **Expected Results**:
+
 - Orchestrator selects next speaker based on context
 - All agents contribute to code review
 - Final decision aggregates all agent feedback
@@ -506,6 +555,7 @@ test('Group Chat: Multi-agent code review', async () => {
 **Workflow**: System Architect spawns API Designer and Database Schema Designer
 
 **Test Code**:
+
 ```typescript
 test('Nested Chat: System Architect delegates to sub-agents', async () => {
   const orchestrator = new Orchestrator('/project/root');
@@ -530,6 +580,7 @@ test('Nested Chat: System Architect delegates to sub-agents', async () => {
 ```
 
 **Expected Results**:
+
 - Parent agent (System Architect) delegates to sub-agents
 - Sub-agents complete their tasks
 - Results returned to parent agent
@@ -542,6 +593,7 @@ test('Nested Chat: System Architect delegates to sub-agents', async () => {
 **Workflow**: Test Engineer spawns 5 parallel test writers
 
 **Test Code**:
+
 ```typescript
 test('Swarm Pattern: Parallel test generation', async () => {
   const orchestrator = new Orchestrator('/project/root');
@@ -559,7 +611,9 @@ test('Swarm Pattern: Parallel test generation', async () => {
   expect(result.parallelExecutions.length).toBe(5);
 
   // Verify all tasks completed
-  const completed = result.parallelExecutions.filter((task) => task.status === 'completed');
+  const completed = result.parallelExecutions.filter(
+    (task) => task.status === 'completed'
+  );
   expect(completed.length).toBe(5);
 
   // Verify results aggregated
@@ -568,6 +622,7 @@ test('Swarm Pattern: Parallel test generation', async () => {
 ```
 
 **Expected Results**:
+
 - All 5 test writers execute in parallel
 - Results aggregated by Test Engineer
 - No race conditions or conflicts
@@ -605,21 +660,25 @@ Validate that parallel task execution achieves 50%+ time savings versus sequenti
 # Implementation Tasks
 
 ## Database Setup
+
 - [ ] T1: Setup PostgreSQL database (P0)
 - [ ] T2: Create user table schema (P1, depends on T1)
 - [ ] T3: Create session table schema (P1, depends on T1)
 
 ## Authentication Service
+
 - [ ] T4: Implement AuthService (P1, depends on T1)
 - [ ] T5: Implement password hashing (P2, depends on T4)
 - [ ] T6: Implement JWT token generation (P2, depends on T4)
 
 ## Session Management
+
 - [ ] T7: Implement SessionManager (P1, depends on T1)
 - [ ] T8: Implement session creation (P2, depends on T7)
 - [ ] T9: Implement session validation (P2, depends on T7)
 
 ## API Endpoints
+
 - [ ] T10: POST /auth/login endpoint (P2, depends on T4, T7)
 - [ ] T11: POST /auth/logout endpoint (P2, depends on T7)
 - [ ] T12: GET /auth/session endpoint (P2, depends on T7)
@@ -632,6 +691,7 @@ Validate that parallel task execution achieves 50%+ time savings versus sequenti
 #### Step 1: Create Task Plan with Dependencies
 
 **Verification**:
+
 ```typescript
 const tasks = await loadTasksFromFile('tasks.md');
 expect(tasks.length).toBe(30);
@@ -642,11 +702,13 @@ expect(tasks.length).toBe(30);
 #### Step 2: Label P-Waves
 
 **Command**:
+
 ```bash
 musuhi tasks label-pwaves tasks.md
 ```
 
 **Expected Output**:
+
 ```
 ✓ Analyzing task dependencies...
 ✓ Building dependency graph (DAG)
@@ -678,6 +740,7 @@ Wave P3 (depends on P2): 6 tasks
 ```
 
 **Verification**:
+
 ```typescript
 const labeler = new PWaveLabeler();
 const result = await labeler.label('tasks.md');
@@ -693,11 +756,13 @@ expect(result.waves.P3.length).toBe(6);
 #### Step 3: Execute Parallel Waves
 
 **Command**:
+
 ```bash
 musuhi tasks execute --parallel tasks.md
 ```
 
 **Expected Output**:
+
 ```
 ✓ Executing tasks in parallel...
 
@@ -730,6 +795,7 @@ Time Summary:
 ```
 
 **Verification**:
+
 ```typescript
 const executor = new ParallelExecutor();
 const result = await executor.execute('tasks.md');
@@ -744,6 +810,7 @@ expect(result.metrics.timeSavings).toBeGreaterThanOrEqual(50); // NFR-P.2
 #### Step 4: Validate Time Savings
 
 **Expected Results**:
+
 - Sequential time: ~450s (30 tasks × 15s average)
 - Parallel time: ~125s (4 waves × ~31s average wave time)
 - Time savings: 72% ✅ (exceeds 50% requirement)
@@ -755,6 +822,7 @@ expect(result.metrics.timeSavings).toBeGreaterThanOrEqual(50); // NFR-P.2
 **Test Scenario**: T4 fails during execution
 
 **Expected Output**:
+
 ```
 Wave P1 (9 tasks running in parallel):
   ✓ T2: Create user table schema (completed in 10s)
@@ -786,6 +854,7 @@ Recovery Options:
 ```
 
 **Verification**:
+
 ```typescript
 const executor = new ParallelExecutor();
 const result = await executor.executeWithFailure('tasks.md', 'T4');
@@ -832,11 +901,13 @@ Validate gap analysis on MUSUHI 2.0 codebase (brownfield analysis).
 #### Step 1: Analyze MUSUHI 2.0 Codebase
 
 **Command**:
+
 ```bash
 musuhi gap analyze --requirements docs/requirements/requirements.md --codebase packages/
 ```
 
 **Expected Output** (abbreviated):
+
 ```
 ✓ Loading requirements from docs/requirements/requirements.md...
 ✓ Found 91 requirements (72 functional + 19 non-functional)
@@ -859,8 +930,12 @@ Analysis completed in 28.5s (target: <60s for 100K LOC) ✓
 ```
 
 **Verification**:
+
 ```typescript
-const analyzer = new GapAnalyzer('docs/requirements/requirements.md', 'packages/');
+const analyzer = new GapAnalyzer(
+  'docs/requirements/requirements.md',
+  'packages/'
+);
 const startTime = performance.now();
 const report = await analyzer.analyze();
 const endTime = performance.now();
@@ -898,12 +973,14 @@ Analysis Time: 28.5s
 ## Missing Features (2)
 
 ### GAP-001: AC-6.5 - Export Dashboard to PDF
+
 **Severity**: Medium
 **Requirement**: "The system SHALL export dashboard view to PDF format"
 **Status**: Not implemented
 **Recommendation**: Implement PDF export using puppeteer or jsPDF
 
 **Files to Create**:
+
 - `packages/dashboard/src/exporters/pdf-exporter.ts`
 - `packages/dashboard/__tests__/pdf-exporter.test.ts`
 
@@ -912,18 +989,21 @@ Analysis Time: 28.5s
 ---
 
 ### GAP-002: AC-8.10 - Platform Auto-Detection Enhancement
+
 **Severity**: Low
 **Requirement**: "The system SHALL auto-detect platform from environment variables"
 **Status**: Partially implemented (only detects Claude Code and Cursor)
 **Recommendation**: Extend AdapterFactory to detect all 8 platforms
 
 **Files to Modify**:
+
 - `packages/platform-adapters/src/adapter-factory.ts`
 
 **Estimated Effort**: 2 hours
 ```
 
 **Verification**:
+
 ```typescript
 const report = await parseGapReport('gap-report.md');
 expect(report.summary.missingFeatures).toBe(2);
@@ -941,6 +1021,7 @@ expect(report.gaps[0].severity).toBe('Medium');
 ## Undocumented Features (3)
 
 ### GAP-003: EventBus Implementation
+
 **Severity**: Low
 **Code**: `packages/dashboard/src/event-bus.ts`
 **Status**: Implemented but not in requirements
@@ -951,6 +1032,7 @@ expect(report.gaps[0].severity).toBe('Medium');
 ---
 
 ### GAP-004: CircularDependencyDetector
+
 **Severity**: Low
 **Code**: `packages/parallel-executor/src/circular-dependency-detector.ts`
 **Status**: Implemented but not explicitly required
@@ -959,6 +1041,7 @@ expect(report.gaps[0].severity).toBe('Medium');
 ---
 
 ### GAP-005: TimeMetricsCollector
+
 **Severity**: Low
 **Code**: `packages/parallel-executor/src/time-metrics-collector.ts`
 **Status**: Implemented but not explicitly required
@@ -966,9 +1049,12 @@ expect(report.gaps[0].severity).toBe('Medium');
 ```
 
 **Verification**:
+
 ```typescript
 expect(report.summary.undocumentedFeatures).toBe(3);
-expect(report.gaps.find(g => g.id === 'GAP-003').code).toContain('event-bus.ts');
+expect(report.gaps.find((g) => g.id === 'GAP-003').code).toContain(
+  'event-bus.ts'
+);
 ```
 
 ---
@@ -981,6 +1067,7 @@ expect(report.gaps.find(g => g.id === 'GAP-003').code).toContain('event-bus.ts')
 ## Conflicts (1)
 
 ### GAP-006: Platform Adapter Test Strategy
+
 **Severity**: Low
 **Requirement**: AC-8.6 - "All platform adapters SHALL be tested in mock mode"
 **Code**: `packages/platform-adapters/__tests__/*Adapter.test.ts`
@@ -991,9 +1078,10 @@ expect(report.gaps.find(g => g.id === 'GAP-003').code).toContain('event-bus.ts')
 ```
 
 **Verification**:
+
 ```typescript
 expect(report.summary.conflicts).toBe(1);
-expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
+expect(report.gaps.find((g) => g.id === 'GAP-006').severity).toBe('Low');
 ```
 
 ---
@@ -1018,6 +1106,7 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 **Objective**: Validate seamless platform migration (Claude Code → Cursor)
 
 **Key Steps**:
+
 1. Initialize on Claude Code
 2. Create specs and changes
 3. Switch platform: `musuhi config set platform cursor`
@@ -1025,6 +1114,7 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 5. Execute agent on new platform
 
 **Acceptance Criteria**:
+
 - ✅ Platform switch completes without errors
 - ✅ Steering files, specs, changes preserved
 - ✅ Agents work on both platforms
@@ -1036,6 +1126,7 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 **Objective**: Validate Continue/Revise/Rollback user actions
 
 **Key Steps**:
+
 1. Enable iterative mode
 2. Execute multi-task workflow
 3. Test Continue (proceed to next task)
@@ -1044,6 +1135,7 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 6. Resume from checkpoint
 
 **Acceptance Criteria**:
+
 - ✅ All 3 user actions work correctly
 - ✅ Checkpoints save and load successfully
 - ✅ tasks.md checkboxes update automatically
@@ -1055,6 +1147,7 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 **Objective**: Validate dashboard updates in real-time (<2s refresh)
 
 **Key Steps**:
+
 1. Launch dashboard: `musuhi view`
 2. Execute workflow in background
 3. Verify dashboard updates without manual refresh
@@ -1062,6 +1155,7 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 5. Measure refresh performance (<100ms, NFR-P.1)
 
 **Acceptance Criteria**:
+
 - ✅ Dashboard launches without errors
 - ✅ Real-time updates work (<2s refresh)
 - ✅ Keyboard navigation functional
@@ -1074,12 +1168,14 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 **Objective**: Validate Phase -1 Gate blocks constitutional violations
 
 **Test Scenarios**:
+
 1. Violate Article 1 (Library-First) - Propose custom logger
 2. Violate Article 2 (Test-First) - Skip tests
 3. Violate Article 5 (Simplicity-First) - Over-engineer solution
 4. Valid requirement - Pass all Articles
 
 **Acceptance Criteria**:
+
 - ✅ Phase -1 Gate blocks violations
 - ✅ No bypass possible
 - ✅ Violation reports provide actionable recommendations
@@ -1094,6 +1190,7 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 **Automation Level**: 100% (all scenarios automated with Vitest)
 
 **Exit Criteria**:
+
 - ✅ All 8 E2E scenarios pass without errors
 - ✅ All acceptance criteria met
 - ✅ No critical bugs found
@@ -1101,6 +1198,7 @@ expect(report.gaps.find(g => g.id === 'GAP-006').severity).toBe('Low');
 ---
 
 **Document Metadata**:
+
 - **Version**: 1.0
 - **Last Updated**: 2025-11-16
 - **Status**: Draft - Pending Implementation

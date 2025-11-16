@@ -1,4 +1,4 @@
-# @musuhi/security-audit-logger
+# @musuhi-ng/security-audit-logger
 
 Security audit logging for MUSUHI - Constitutional SDD framework.
 
@@ -13,7 +13,7 @@ Security audit logging for MUSUHI - Constitutional SDD framework.
 ## Installation
 
 ```bash
-pnpm add @musuhi/security-audit-logger
+pnpm add @musuhi-ng/security-audit-logger
 ```
 
 ## Usage
@@ -21,13 +21,13 @@ pnpm add @musuhi/security-audit-logger
 ### Basic Setup
 
 ```typescript
-import { SecurityAuditLogger } from '@musuhi/security-audit-logger';
+import { SecurityAuditLogger } from '@musuhi-ng/security-audit-logger';
 
 // Initialize logger
 const logger = new SecurityAuditLogger({
   logDir: './logs/security-audit',
-  maxLogSizeMB: 100,    // Optional: Max file size before rotation (default: 100MB)
-  retentionDays: 90,    // Optional: Log retention period (default: 90 days)
+  maxLogSizeMB: 100, // Optional: Max file size before rotation (default: 100MB)
+  retentionDays: 90, // Optional: Log retention period (default: 90 days)
 });
 
 await logger.initialize();
@@ -47,10 +47,7 @@ await logger.logConstitutionalViolation('Article 1', [
 #### Path Traversal Attempts
 
 ```typescript
-await logger.logPathTraversalAttempt(
-  '../../../etc/passwd',
-  'gap-analyzer'
-);
+await logger.logPathTraversalAttempt('../../../etc/passwd', 'gap-analyzer');
 ```
 
 #### Validation Failures
@@ -123,9 +120,7 @@ Each audit log entry is a JSON object with the following structure:
   "result": "blocked",
   "details": {
     "articleId": "Article 1",
-    "violations": [
-      { "ac": "AC-1.1", "description": "Missing AC comment" }
-    ],
+    "violations": [{ "ac": "AC-1.1", "description": "Missing AC comment" }],
     "violationCount": 1
   },
   "source": "phase--1-gate",
@@ -140,10 +135,12 @@ Each audit log entry is a JSON object with the following structure:
 ## Log Rotation
 
 Logs are automatically rotated when:
+
 - File size exceeds `maxLogSizeMB` (default: 100MB)
 - A new day begins (daily rotation)
 
 Log file naming convention:
+
 - `security-audit-YYYY-MM-DD.log`
 - `security-audit-YYYY-MM-DD-TIMESTAMP.log` (if multiple files in one day)
 
@@ -159,8 +156,8 @@ Log file naming convention:
 ### Phase -1 Gate
 
 ```typescript
-import { PhaseGate } from '@musuhi/constitutional-governance';
-import { SecurityAuditLogger } from '@musuhi/security-audit-logger';
+import { PhaseGate } from '@musuhi-ng/constitutional-governance';
+import { SecurityAuditLogger } from '@musuhi-ng/security-audit-logger';
 
 const logger = new SecurityAuditLogger({ logDir: './logs/security-audit' });
 await logger.initialize();
@@ -178,8 +175,8 @@ if (!result.passed) {
 ### Gap Analyzer
 
 ```typescript
-import { GapAnalyzer } from '@musuhi/gap-analyzer';
-import { SecurityAuditLogger } from '@musuhi/security-audit-logger';
+import { GapAnalyzer } from '@musuhi-ng/gap-analyzer';
+import { SecurityAuditLogger } from '@musuhi-ng/security-audit-logger';
 
 const logger = new SecurityAuditLogger({ logDir: './logs/security-audit' });
 await logger.initialize();
@@ -190,10 +187,7 @@ try {
   const report = await analyzer.analyze();
 } catch (error) {
   if (error.message.includes('Path traversal')) {
-    await logger.logPathTraversalAttempt(
-      error.details.path,
-      'gap-analyzer'
-    );
+    await logger.logPathTraversalAttempt(error.details.path, 'gap-analyzer');
   }
   throw error;
 }

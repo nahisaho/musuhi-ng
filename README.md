@@ -70,7 +70,7 @@ pnpm lint
 ### 1. Initialize a New Project
 
 ```bash
-npx @musuhi/cli init my-project
+npx @musuhi-ng/cli init my-project
 cd my-project
 ```
 
@@ -136,7 +136,7 @@ The framework enforces 9 immutable Articles through Phase -1 Gates:
 
 ```bash
 # Watch mode for development
-pnpm --filter @musuhi/core dev
+pnpm --filter @musuhi-ng/core dev
 
 # Run tests with coverage
 pnpm test:coverage

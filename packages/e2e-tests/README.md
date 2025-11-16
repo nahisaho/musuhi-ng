@@ -1,4 +1,4 @@
-# @musuhi/e2e-tests
+# @musuhi-ng/e2e-tests
 
 End-to-End test suite for MUSUHI 2.0, validating complete workflows across all 8 features.
 
@@ -14,6 +14,7 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
 ## Test Scenarios
 
 ### TEST-E2E-001: Complete SDD Workflow ⭐
+
 - **Duration**: 5 minutes
 - **Coverage**: All 8 stages (Research → Monitoring)
 - **Validates**:
@@ -27,6 +28,7 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
   - Workflow status tracking
 
 ### TEST-E2E-002: Multi-Agent Orchestration Patterns
+
 - **Duration**: 3 minutes
 - **Coverage**: 4 orchestration patterns
 - **Validates**:
@@ -36,6 +38,7 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
   - Swarm Pattern (parallel execution)
 
 ### TEST-E2E-003: Parallel Task Execution ⭐
+
 - **Duration**: 2 minutes
 - **Coverage**: P-wave labeling and parallel execution
 - **Validates**:
@@ -45,6 +48,7 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
   - Task failure handling
 
 ### TEST-E2E-004: Gap Analysis on Real Codebase
+
 - **Duration**: 1 minute
 - **Coverage**: Brownfield gap detection
 - **Validates**:
@@ -54,6 +58,7 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
   - Performance (<60s for 100K LOC, NFR-P.3)
 
 ### TEST-E2E-005: Platform Switching
+
 - **Duration**: 2 minutes
 - **Coverage**: Multi-platform support
 - **Validates**:
@@ -62,6 +67,7 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
   - Agent execution on new platform
 
 ### TEST-E2E-006: Iterative Verification Workflow
+
 - **Duration**: 3 minutes
 - **Coverage**: Task-by-task execution
 - **Validates**:
@@ -71,6 +77,7 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
   - Checkpoint save/resume
 
 ### TEST-E2E-007: Dashboard Real-Time Updates ⭐
+
 - **Duration**: 2 minutes
 - **Coverage**: Interactive TUI dashboard
 - **Validates**:
@@ -79,6 +86,7 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
   - Performance (<100ms refresh, NFR-P.1)
 
 ### TEST-E2E-008: Constitutional Enforcement ⭐
+
 - **Duration**: 2 minutes
 - **Coverage**: Phase -1 Gate validation
 - **Validates**:
@@ -92,21 +100,25 @@ This package contains 8 comprehensive E2E test scenarios that validate the entir
 ## Running Tests
 
 ### Run all E2E tests
+
 ```bash
 pnpm test
 ```
 
 ### Run specific scenario
+
 ```bash
 pnpm test src/scenarios/sdd-workflow.e2e.test.ts
 ```
 
 ### Run with coverage
+
 ```bash
 pnpm test:coverage
 ```
 
 ### Watch mode
+
 ```bash
 pnpm test:watch
 ```
@@ -138,16 +150,19 @@ packages/e2e-tests/
 ## Test Helpers
 
 ### `test-project-setup.ts`
+
 - `createTestProject()`: Creates temporary test project
 - `cleanupTestProject()`: Removes test project after completion
 
 ### `file-assertions.ts`
+
 - `assertFileExists()`: Verifies file exists
 - `assertDirectoryExists()`: Verifies directory exists
 - `assertFileContains()`: Verifies file content
 - `assertEARSFormat()`: Validates EARS requirement format
 
 ### `performance-metrics.ts`
+
 - `PerformanceMetrics`: Measures execution time
 - `createMetrics()`: Creates metrics instance
 - `measure()`: Wraps async function with timing
@@ -156,16 +171,17 @@ packages/e2e-tests/
 
 All E2E tests validate performance against non-functional requirements:
 
-| NFR | Requirement | Target | Validated In |
-|-----|-------------|--------|--------------|
-| NFR-P.1 | Dashboard response time | < 100ms (95th percentile) | TEST-E2E-007 |
-| NFR-P.2 | Parallel execution savings | 50%+ vs sequential | TEST-E2E-003 |
-| NFR-P.3 | Gap analysis speed | < 60s for 100K LOC | TEST-E2E-004 |
-| NFR-P.4 | Agent routing overhead | < 200ms | TEST-E2E-002 |
+| NFR     | Requirement                | Target                    | Validated In |
+| ------- | -------------------------- | ------------------------- | ------------ |
+| NFR-P.1 | Dashboard response time    | < 100ms (95th percentile) | TEST-E2E-007 |
+| NFR-P.2 | Parallel execution savings | 50%+ vs sequential        | TEST-E2E-003 |
+| NFR-P.3 | Gap analysis speed         | < 60s for 100K LOC        | TEST-E2E-004 |
+| NFR-P.4 | Agent routing overhead     | < 200ms                   | TEST-E2E-002 |
 
 ## Exit Criteria
 
 All tests must pass with:
+
 - ✅ 0 failures
 - ✅ All acceptance criteria met
 - ✅ All performance benchmarks met
@@ -174,6 +190,7 @@ All tests must pass with:
 ## CI/CD Integration
 
 These tests should run:
+
 - On every PR to `main`
 - Before every release
 - Nightly builds
@@ -183,21 +200,25 @@ These tests should run:
 ## Debugging
 
 ### Enable verbose logging
+
 ```bash
 DEBUG=musuhi:* pnpm test
 ```
 
 ### Run single test
+
 ```bash
 pnpm test -- -t "should execute complete 8-stage SDD workflow"
 ```
 
 ### Keep test artifacts
+
 Set `KEEP_TEST_ARTIFACTS=1` to prevent cleanup.
 
 ## Contributing
 
 When adding new E2E scenarios:
+
 1. Follow naming convention: `TEST-E2E-XXX`
 2. Include estimated execution time
 3. Document acceptance criteria

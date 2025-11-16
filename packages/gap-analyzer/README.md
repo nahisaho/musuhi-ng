@@ -1,4 +1,4 @@
-# @musuhi/gap-analyzer
+# @musuhi-ng/gap-analyzer
 
 Brownfield gap analysis for MUSUHI 2.0 - Feature 5
 
@@ -21,7 +21,7 @@ The Gap Analyzer automates detection of gaps between requirements and implementa
 ## Installation
 
 ```bash
-pnpm add @musuhi/gap-analyzer
+pnpm add @musuhi-ng/gap-analyzer
 ```
 
 ## Usage
@@ -29,7 +29,7 @@ pnpm add @musuhi/gap-analyzer
 ### Basic Usage
 
 ```typescript
-import { GapAnalyzer } from '@musuhi/gap-analyzer';
+import { GapAnalyzer } from '@musuhi-ng/gap-analyzer';
 
 const analyzer = new GapAnalyzer({
   codebasePath: '/path/to/codebase',
@@ -44,7 +44,11 @@ await analyzer.generateReport('./gap-report.md');
 ### Advanced Usage
 
 ```typescript
-import { GapAnalyzer, GapReportGenerator, RecommendationEngine } from '@musuhi/gap-analyzer';
+import {
+  GapAnalyzer,
+  GapReportGenerator,
+  RecommendationEngine,
+} from '@musuhi-ng/gap-analyzer';
 
 // Analyze gaps
 const analyzer = new GapAnalyzer(config);
@@ -119,13 +123,14 @@ const html = generator.generateHTML(report, recommendations);
 
 ## Missing Features (27)
 
-| Requirement | Feature | Recommendation | Severity |
-|-------------|---------|----------------|----------|
-| AC-1.1 | Constitution File | Add implementation for Constitution File | critical |
+| Requirement | Feature           | Recommendation                           | Severity |
+| ----------- | ----------------- | ---------------------------------------- | -------- |
+| AC-1.1      | Constitution File | Add implementation for Constitution File | critical |
 
 ## Recommendations (45)
 
 ### Add Feature (27)
+
 - **Add implementation for Constitution File**
   - Priority: critical
   - Estimated Effort: 40 hours (5 days)

@@ -1,5 +1,5 @@
 {
-  "name": "@musuhi/verification-engine",
+  "name": "@musuhi-ng/verification-engine",
   "version": "0.1.0",
   "description": "Requirements traceability validation engine for MUSUHI 2.0",
   "type": "module",
@@ -34,7 +34,7 @@
   "author": "MUSUHI Contributors",
   "license": "MIT",
   "dependencies": {
-    "@musuhi/core": "workspace:*"
+    "@musuhi-ng/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

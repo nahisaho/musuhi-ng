@@ -1,10 +1,10 @@
-# @musuhi/platform-adapters
+# @musuhi-ng/platform-adapters
 
 Multi-platform AI integration adapters for MUSUHI 2.0 Specification Driven Development framework.
 
 ## Overview
 
-`@musuhi/platform-adapters` provides a unified interface for integrating MUSUHI 2.0 with 8 major AI coding assistant platforms. This enables platform-agnostic SDD workflows that work seamlessly across different development environments.
+`@musuhi-ng/platform-adapters` provides a unified interface for integrating MUSUHI 2.0 with 8 major AI coding assistant platforms. This enables platform-agnostic SDD workflows that work seamlessly across different development environments.
 
 ## Features
 
@@ -57,7 +57,7 @@ Comprehensive documentation of feature availability per platform.
 ## Installation
 
 ```bash
-pnpm add @musuhi/platform-adapters
+pnpm add @musuhi-ng/platform-adapters
 ```
 
 ## Usage
@@ -65,7 +65,7 @@ pnpm add @musuhi/platform-adapters
 ### Auto-Detection (Recommended)
 
 ```typescript
-import { AdapterFactory } from '@musuhi/platform-adapters';
+import { AdapterFactory } from '@musuhi-ng/platform-adapters';
 
 // Auto-detect and initialize
 const adapter = await AdapterFactory.createAutoDetected('/path/to/project');
@@ -88,7 +88,10 @@ console.log(response.message);
 ### Manual Platform Selection
 
 ```typescript
-import { AdapterFactory, ClaudeCodeAdapter } from '@musuhi/platform-adapters';
+import {
+  AdapterFactory,
+  ClaudeCodeAdapter,
+} from '@musuhi-ng/platform-adapters';
 
 // Option 1: Use factory
 const adapter = AdapterFactory.createAdapter('claude-code', '/path/to/project');
@@ -102,7 +105,7 @@ await claudeAdapter.initialize();
 ### LLM Abstraction Layer
 
 ```typescript
-import { ClaudeProvider, OpenAIProvider } from '@musuhi/platform-adapters';
+import { ClaudeProvider, OpenAIProvider } from '@musuhi-ng/platform-adapters';
 
 // Use Claude LLM
 const claude = new ClaudeProvider({
@@ -156,6 +159,7 @@ Auto-detection follows this priority:
    - `which qwen` → Qwen Code
 
 4. **Config File** (`.musuhi/config.yaml`)
+
    ```yaml
    platform: claude-code
    ```
@@ -176,6 +180,7 @@ Auto-detection follows this priority:
 | Streaming Support         | ✅          | ✅     | ✅      | ✅  | ✅       | ❌    | ✅     | ❌   |
 
 **Legend**:
+
 - ✅ Full Support
 - ⚠️ Partial Support (see [Compatibility Matrix](./src/compatibility-matrix.md))
 - ❌ Not Supported
@@ -190,7 +195,10 @@ See [Compatibility Matrix](./src/compatibility-matrix.md) for detailed feature c
 abstract class BasePlatformAdapter implements IPlatformAdapter {
   abstract readonly platform: PlatformType;
   abstract readonly version: string;
-  abstract invokeAgent(agent: AgentConfig, context: AgentContext): Promise<AgentResponse>;
+  abstract invokeAgent(
+    agent: AgentConfig,
+    context: AgentContext
+  ): Promise<AgentResponse>;
   abstract readSteering(path: string): Promise<string>;
   abstract writeDelta(path: string, delta: Delta): Promise<void>;
   abstract enforcePhaseGate(gate: PhaseGate): Promise<GateResult>;
@@ -229,8 +237,13 @@ abstract class CLIAdapterBase extends BasePlatformAdapter {
 ```typescript
 class AdapterFactory {
   static detectPlatform(projectRoot?: string): PlatformType;
-  static createAdapter(platform: PlatformType, projectRoot?: string): IPlatformAdapter;
-  static async createAutoDetected(projectRoot?: string): Promise<IPlatformAdapter>;
+  static createAdapter(
+    platform: PlatformType,
+    projectRoot?: string
+  ): IPlatformAdapter;
+  static async createAutoDetected(
+    projectRoot?: string
+  ): Promise<IPlatformAdapter>;
 }
 ```
 
@@ -242,7 +255,10 @@ interface IPlatformAdapter {
   readonly version: string;
 
   initialize(): Promise<void>;
-  invokeAgent(agent: AgentConfig, context: AgentContext): Promise<AgentResponse>;
+  invokeAgent(
+    agent: AgentConfig,
+    context: AgentContext
+  ): Promise<AgentResponse>;
   readSteering(path: string): Promise<string>;
   writeDelta(path: string, delta: Delta): Promise<void>;
   enforcePhaseGate(gate: PhaseGate): Promise<GateResult>;
@@ -259,7 +275,11 @@ interface ILLMProvider {
 
   invoke(prompt: string, context?: Record<string, unknown>): Promise<string>;
   supportsStreaming(): boolean;
-  stream?(prompt: string, context: Record<string, unknown> | undefined, onChunk: (chunk: string) => void): Promise<void>;
+  stream?(
+    prompt: string,
+    context: Record<string, unknown> | undefined,
+    onChunk: (chunk: string) => void
+  ): Promise<void>;
 }
 ```
 
@@ -267,7 +287,7 @@ interface ILLMProvider {
 
 This package adheres to MUSUHI 2.0's 9 Constitutional Articles:
 
-- **Article 1 (Library-First)**: Reuses `@musuhi/core` types and interfaces
+- **Article 1 (Library-First)**: Reuses `@musuhi-ng/core` types and interfaces
 - **Article 2 (Test-First)**: 72+ tests with 80%+ coverage
 - **Article 4 (Documentation-First)**: Comprehensive README and compatibility matrix
 - **Article 5 (Simplicity-First)**: Abstract base classes reduce duplication
@@ -296,10 +316,10 @@ MIT © MUSUHI Team
 
 ## Related Packages
 
-- `@musuhi/core` - Core types and utilities
-- `@musuhi/constitutional-governance` - Constitutional validation
-- `@musuhi/change-workflow` - Change management
-- `@musuhi/multi-agent-orchestrator` - Agent orchestration
+- `@musuhi-ng/core` - Core types and utilities
+- `@musuhi-ng/constitutional-governance` - Constitutional validation
+- `@musuhi-ng/change-workflow` - Change management
+- `@musuhi-ng/multi-agent-orchestrator` - Agent orchestration
 
 ## Support
 
