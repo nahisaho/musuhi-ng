@@ -1,5 +1,9 @@
 # MUSUHI 2.0 - Specification Driven Development Framework
 
+[![npm version](https://badge.fury.io/js/@musuhi-ng%2Fcore.svg)](https://www.npmjs.com/package/@musuhi-ng/core)
+[![GitHub Actions](https://github.com/nahisaho/musuhi-ng/workflows/CI/badge.svg)](https://github.com/nahisaho/musuhi-ng/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A next-generation framework for AI-assisted software development using Specification Driven Development (SDD) methodology.
 
 ## Overview
@@ -51,7 +55,44 @@ packages/
 
 ## Installation
 
+### Using npx (Recommended)
+
 ```bash
+# Run CLI without installation
+npx @musuhi-ng/cli --help
+npx @musuhi-ng/cli init my-project
+```
+
+### Global Installation
+
+```bash
+# Install CLI globally
+npm install -g @musuhi-ng/cli
+
+# Use musuhi command
+musuhi --help
+musuhi init my-project
+```
+
+### As a Library
+
+```bash
+# Install core library
+npm install @musuhi-ng/core
+
+# Or install specific packages
+npm install @musuhi-ng/constitutional-governance
+npm install @musuhi-ng/multi-agent-orchestrator
+npm install @musuhi-ng/gap-analyzer
+```
+
+### Development
+
+```bash
+# Clone repository
+git clone https://github.com/nahisaho/musuhi-ng.git
+cd musuhi-ng
+
 # Install dependencies
 pnpm install
 
@@ -60,9 +101,6 @@ pnpm build
 
 # Run tests
 pnpm test
-
-# Run linter
-pnpm lint
 ```
 
 ## Quick Start
@@ -166,7 +204,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 ## Support
 
-- GitHub Issues: https://github.com/musuhi/musuhi2/issues
+- GitHub Issues: https://github.com/nahisaho/musuhi-ng/issues
 - Documentation: https://musuhi.dev/docs
 
 ---
