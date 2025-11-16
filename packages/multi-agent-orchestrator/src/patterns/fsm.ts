@@ -145,13 +145,7 @@ export class FSMPattern extends BasePattern {
           // No transition found - terminal state
           isComplete = true;
         } else {
-          // Execute transition
-          fsmState.previousState = currentState;
-          fsmState.currentState = transition.to;
-          fsmState.stateHistory.push(transition.to);
-          transitionCount++;
-
-          // Execute transition action if defined
+          // Execute transition action BEFORE state change if defined
           if (transition.action) {
             await this.executeTransitionAction(
               transition,
@@ -160,6 +154,12 @@ export class FSMPattern extends BasePattern {
               context.conversationId
             );
           }
+
+          // Execute transition - update state AFTER action
+          fsmState.previousState = currentState;
+          fsmState.currentState = transition.to;
+          fsmState.stateHistory.push(transition.to);
+          transitionCount++;
         }
 
         // Update execution progress
