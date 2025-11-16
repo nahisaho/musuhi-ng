@@ -55,15 +55,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build all packages
+        run: pnpm build
+
       - name: Run linters
         run: pnpm lint || echo "⚠️ Lint errors found but continuing with publish"
         continue-on-error: true
 
       - name: Run type check
         run: pnpm typecheck
-
-      - name: Build all packages
-        run: pnpm build
 
       - name: Run tests
         run: pnpm test
