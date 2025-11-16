@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/constitutional-governance",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Constitutional governance and Phase -1 Gate enforcement for MUSUHI 2.0",
   "type": "module",
   "main": "./dist/index.js",

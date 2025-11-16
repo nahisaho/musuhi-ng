@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/platform-adapters",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "Multi-platform AI integration adapters for MUSUHI 2.0 SDD framework",
   "type": "module",
   "main": "./dist/index.js",

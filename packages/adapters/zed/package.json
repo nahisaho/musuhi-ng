@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/adapter-zed",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Zed adapter for MUSUHI 2.0",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/security-audit-logger",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Security audit logging for MUSUHI",
   "type": "module",
   "main": "./dist/index.js",
