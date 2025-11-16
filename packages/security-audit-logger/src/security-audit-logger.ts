@@ -7,8 +7,9 @@
  * @packageDocumentation
  */
 
-import { writeFile, appendFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { writeFile, appendFile, mkdir, readdir, stat, unlink } from 'node:fs/promises';
+import { hostname } from 'node:os';
 import path from 'node:path';
 
 /**
@@ -17,16 +18,16 @@ import path from 'node:path';
  * Categories of security-relevant events that should be logged.
  */
 export type SecurityEventType =
-  | 'constitutional-violation'    // Phase -1 Gate violations
-  | 'path-traversal-attempt'     // Attempted directory traversal
-  | 'file-access-denied'         // Unauthorized file access attempt
-  | 'validation-failure'         // Requirements or code validation failure
-  | 'authentication-failure'     // Authentication attempt failed (future)
-  | 'authorization-failure'      // Authorization check failed (future)
-  | 'configuration-change'       // Security-relevant configuration change
-  | 'dependency-vulnerability'   // Vulnerable dependency detected
-  | 'security-scan-complete'     // Security scan completed
-  | 'audit-log-tamper-attempt';  // Attempted audit log tampering
+  | 'constitutional-violation' // Phase -1 Gate violations
+  | 'path-traversal-attempt' // Attempted directory traversal
+  | 'file-access-denied' // Unauthorized file access attempt
+  | 'validation-failure' // Requirements or code validation failure
+  | 'authentication-failure' // Authentication attempt failed (future)
+  | 'authorization-failure' // Authorization check failed (future)
+  | 'configuration-change' // Security-relevant configuration change
+  | 'dependency-vulnerability' // Vulnerable dependency detected
+  | 'security-scan-complete' // Security scan completed
+  | 'audit-log-tamper-attempt'; // Attempted audit log tampering
 
 /**
  * Security Event Severity
@@ -41,11 +42,11 @@ export type SecurityEventSeverity = 'critical' | 'high' | 'medium' | 'low' | 'in
 export interface SecurityEvent {
   type: SecurityEventType;
   severity: SecurityEventSeverity;
-  action: string;               // What action was attempted
+  action: string; // What action was attempted
   result: 'allowed' | 'blocked' | 'error'; // Outcome of the action
-  details?: Record<string, unknown>;       // Additional event details
-  userId?: string;              // User who triggered the event
-  source?: string;              // Source component/module
+  details?: Record<string, unknown>; // Additional event details
+  userId?: string; // User who triggered the event
+  source?: string; // Source component/module
 }
 
 /**
@@ -54,10 +55,10 @@ export interface SecurityEvent {
  * Complete audit log entry with metadata.
  */
 export interface AuditLogEntry extends SecurityEvent {
-  timestamp: string;            // ISO 8601 timestamp
-  eventId: string;              // Unique event identifier
-  hostname: string;             // Machine hostname
-  processId: number;            // Process ID
+  timestamp: string; // ISO 8601 timestamp
+  eventId: string; // Unique event identifier
+  hostname: string; // Machine hostname
+  processId: number; // Process ID
 }
 
 /**
@@ -75,9 +76,9 @@ export class SecurityAuditLogger {
   private logDir: string;
   private currentLogFile: string;
   private maxLogSizeMB: number;
-  // @ts-ignore - TODO: Implement log cleanup based on retention policy
   private retentionDays: number;
   private hostname: string;
+  private lastCleanupDate: Date;
 
   /**
    * Create a new security audit logger
@@ -86,16 +87,13 @@ export class SecurityAuditLogger {
    *
    * @param config - Logger configuration
    */
-  constructor(config: {
-    logDir: string;
-    maxLogSizeMB?: number;
-    retentionDays?: number;
-  }) {
+  constructor(config: { logDir: string; maxLogSizeMB?: number; retentionDays?: number }) {
     this.logDir = path.resolve(config.logDir);
     this.maxLogSizeMB = config.maxLogSizeMB ?? 100; // 100MB default
     this.retentionDays = config.retentionDays ?? 90; // 90 days default
     this.hostname = this.getHostname();
     this.currentLogFile = this.getCurrentLogFilePath();
+    this.lastCleanupDate = new Date(0); // Initialize to epoch to trigger first cleanup
   }
 
   /**
@@ -103,6 +101,7 @@ export class SecurityAuditLogger {
    *
    * Creates log directory if it doesn't exist.
    * Validates log directory permissions.
+   * Performs initial cleanup of old log files.
    */
   async initialize(): Promise<void> {
     // Create log directory if it doesn't exist
@@ -114,6 +113,9 @@ export class SecurityAuditLogger {
     if (!existsSync(this.currentLogFile)) {
       await this.createNewLogFile();
     }
+
+    // Perform initial cleanup of old log files
+    await this.cleanupOldLogs();
   }
 
   /**
@@ -144,6 +146,9 @@ export class SecurityAuditLogger {
 
       // Check if log rotation is needed
       await this.checkLogRotation();
+
+      // Check if cleanup is needed (run once per day)
+      await this.checkCleanup();
     } catch (error) {
       // Log to stderr if file write fails (don't throw - avoid breaking application)
       console.error(
@@ -187,10 +192,7 @@ export class SecurityAuditLogger {
    * @param attemptedPath - Path that was attempted
    * @param component - Component that detected the attempt
    */
-  async logPathTraversalAttempt(
-    attemptedPath: string,
-    component: string
-  ): Promise<void> {
+  async logPathTraversalAttempt(attemptedPath: string, component: string): Promise<void> {
     await this.logEvent({
       type: 'path-traversal-attempt',
       severity: 'critical',
@@ -248,11 +250,16 @@ export class SecurityAuditLogger {
       info: number;
     }
   ): Promise<void> {
-    const totalFindings = findings.critical + findings.high + findings.medium + findings.low + findings.info;
+    const totalFindings =
+      findings.critical + findings.high + findings.medium + findings.low + findings.info;
     const severity: SecurityEventSeverity =
-      findings.critical > 0 ? 'critical' :
-      findings.high > 0 ? 'high' :
-      findings.medium > 0 ? 'medium' : 'info';
+      findings.critical > 0
+        ? 'critical'
+        : findings.high > 0
+          ? 'high'
+          : findings.medium > 0
+            ? 'medium'
+            : 'info';
 
     await this.logEvent({
       type: 'security-scan-complete',
@@ -286,7 +293,7 @@ export class SecurityAuditLogger {
    */
   private getHostname(): string {
     try {
-      return require('node:os').hostname();
+      return hostname();
     } catch {
       return 'unknown';
     }
@@ -350,7 +357,94 @@ export class SecurityAuditLogger {
         }
       }
     } catch (error) {
-      console.error(`Failed to check log rotation: ${error instanceof Error ? error.message : String(error)}`);
+      console.error(
+        `Failed to check log rotation: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  /**
+   * Check if cleanup should run
+   *
+   * Runs log cleanup once per day to remove logs older than retention period.
+   */
+  private async checkCleanup(): Promise<void> {
+    const now = new Date();
+    const daysSinceLastCleanup =
+      (now.getTime() - this.lastCleanupDate.getTime()) / (1000 * 60 * 60 * 24);
+
+    if (daysSinceLastCleanup >= 1) {
+      await this.cleanupOldLogs();
+      this.lastCleanupDate = now;
+    }
+  }
+
+  /**
+   * Cleanup old log files based on retention policy
+   *
+   * Removes log files older than retentionDays.
+   * This implements the security log retention policy.
+   *
+   * @returns Number of files deleted
+   */
+  private async cleanupOldLogs(): Promise<number> {
+    try {
+      const files = await readdir(this.logDir);
+      const now = Date.now();
+      const retentionMs = this.retentionDays * 24 * 60 * 60 * 1000;
+      let deletedCount = 0;
+
+      for (const file of files) {
+        // Only process security audit log files
+        if (!file.startsWith('security-audit-') || !file.endsWith('.log')) {
+          continue;
+        }
+
+        const filePath = path.join(this.logDir, file);
+
+        // Skip current log file
+        if (filePath === this.currentLogFile) {
+          continue;
+        }
+
+        try {
+          const stats = await stat(filePath);
+          const fileAge = now - stats.mtime.getTime();
+
+          // Delete if older than retention period
+          if (fileAge > retentionMs) {
+            await unlink(filePath);
+            deletedCount++;
+
+            // Log the deletion (to current log file)
+            await this.logEvent({
+              type: 'configuration-change',
+              severity: 'info',
+              action: 'log-file-deletion',
+              result: 'allowed',
+              details: {
+                deletedFile: file,
+                fileAge: Math.floor(fileAge / (1000 * 60 * 60 * 24)), // days
+                retentionDays: this.retentionDays,
+                reason: 'exceeded-retention-period',
+              },
+              source: 'security-audit-logger',
+            });
+          }
+        } catch (error) {
+          // Skip files that can't be stat'd or deleted
+          console.error(
+            `Failed to process log file ${file}: ${error instanceof Error ? error.message : String(error)}`
+          );
+        }
+      }
+
+      return deletedCount;
+    } catch (error) {
+      console.error(
+        `Failed to cleanup old logs: ${error instanceof Error ? error.message : String(error)}`
+      );
+      return 0;
     }
   }
 }
