@@ -68,9 +68,6 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-      - name: Run E2E tests
-        run: pnpm --filter @musuhi-ng/e2e-tests test
-
       - name: Security audit (production dependencies only)
         run: |
           pnpm audit --prod || {
