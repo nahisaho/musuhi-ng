@@ -11,6 +11,8 @@
  * - Article 2: Test-First - All methods covered by unit tests
  */
 
+import * as readline from 'node:readline';
+
 import type { Task, TaskResult, UserAction, UserPrompt } from '../types/index.js';
 
 /**
@@ -69,8 +71,7 @@ export class CompletionPrompt {
     if (result.changes.length > 0) {
       message += `\nChanges (${result.changes.length} files):\n`;
       for (const change of result.changes) {
-        const icon =
-          change.type === 'created' ? '➕' : change.type === 'modified' ? '✏️' : '➖';
+        const icon = change.type === 'created' ? '➕' : change.type === 'modified' ? '✏️' : '➖';
         message += `  ${icon} ${change.path}\n`;
       }
     }
@@ -99,12 +100,55 @@ export class CompletionPrompt {
    * Get user input for action selection
    *
    * AC-7.2: Task Completion Prompt
-   * - In real implementation, use readline or blessed for interactive input
-   * - For now, default to 'continue' for automated testing
+   * - Prompts user interactively via readline
+   * - Validates input and maps to UserAction
+   * - Defaults to 'continue' in non-interactive environments (CI/testing)
    */
   private async getUserInput(): Promise<UserAction> {
-    // TODO: Implement actual user input (readline, blessed, etc.)
-    // For now, default to 'continue' for testing
-    return 'continue';
+    // Check if running in non-interactive environment (CI/testing)
+    if (!process.stdin.isTTY) {
+      console.log('Non-interactive environment detected, defaulting to: Continue');
+      return 'continue';
+    }
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    return new Promise((resolve) => {
+      const promptUser = (): void => {
+        rl.question('\nYour choice [C/R/B/S/A]: ', (answer) => {
+          const input = answer.trim().toLowerCase();
+
+          // Map input to UserAction
+          const actionMap: Record<string, UserAction> = {
+            c: 'continue',
+            r: 'revise',
+            b: 'rollback',
+            s: 'skip',
+            a: 'abort',
+            continue: 'continue',
+            revise: 'revise',
+            rollback: 'rollback',
+            back: 'rollback',
+            skip: 'skip',
+            abort: 'abort',
+          };
+
+          const action = actionMap[input];
+
+          if (action) {
+            rl.close();
+            resolve(action);
+          } else {
+            console.log('Invalid input. Please enter C, R, B, S, or A.');
+            promptUser(); // Re-prompt on invalid input
+          }
+        });
+      };
+
+      promptUser();
+    });
   }
 }

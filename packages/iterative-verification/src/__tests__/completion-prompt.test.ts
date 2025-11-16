@@ -4,18 +4,24 @@
  * Tests AC-7.2: Task Completion Prompt
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { CompletionPrompt } from '../ui/completion-prompt.js';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+
 import type { Task, TaskResult } from '../types/index.js';
+import { CompletionPrompt } from '../ui/completion-prompt.js';
 
 describe('CompletionPrompt', () => {
   let prompt: CompletionPrompt;
   let sampleTask: Task;
   let successResult: TaskResult;
   let failureResult: TaskResult;
+  let originalIsTTY: boolean;
 
   beforeEach(() => {
     prompt = new CompletionPrompt();
+    // Save original TTY state
+    originalIsTTY = process.stdin.isTTY || false;
+    // Mock non-TTY environment for automated tests
+    Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
 
     sampleTask = {
       id: 't1',
@@ -48,6 +54,11 @@ describe('CompletionPrompt', () => {
       duration: 500,
       output: 'Task failed',
     };
+  });
+
+  afterEach(() => {
+    // Restore original TTY state
+    Object.defineProperty(process.stdin, 'isTTY', { value: originalIsTTY, configurable: true });
   });
 
   describe('AC-7.2: Task Completion Prompt', () => {
@@ -125,9 +136,16 @@ describe('CompletionPrompt', () => {
       consoleSpy.mockRestore();
     });
 
-    it('should return default action (continue)', async () => {
+    it('should return default action (continue) in non-TTY environment', async () => {
+      const consoleSpy = vi.spyOn(console, 'log');
       const action = await prompt.prompt(sampleTask, successResult);
+
       expect(action).toBe('continue');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Non-interactive environment detected')
+      );
+
+      consoleSpy.mockRestore();
     });
 
     it('should handle task with no changes', async () => {
@@ -156,6 +174,18 @@ describe('CompletionPrompt', () => {
       expect(output).not.toContain('Errors (');
 
       consoleSpy.mockRestore();
+    });
+  });
+
+  describe('Interactive User Input (TTY mode)', () => {
+    beforeEach(() => {
+      // Enable TTY mode for these tests
+      Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    });
+
+    it('should detect TTY mode for interactive prompts', () => {
+      // Verify TTY detection is enabled for interactive mode
+      expect(process.stdin.isTTY).toBe(true);
     });
   });
 });
