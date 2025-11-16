@@ -8,22 +8,13 @@
  * EARS: WHEN a task requires linear agent handoff, the system SHALL execute agents sequentially
  */
 
-import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
-import type {
-  Task,
-  TaskResult,
-} from '../types/task.js';
-import {
-  OrchestrationPattern,
-  PatternExecutionStatus,
-} from '../types/pattern.js';
-import type {
-  ConversationContext,
-  SequentialChatConfig,
-  PatternConfig,
-} from '../types/pattern.js';
 import { MessageType } from '../types/message.js';
 import type { Message } from '../types/message.js';
+import { OrchestrationPattern, PatternExecutionStatus } from '../types/pattern.js';
+import type { ConversationContext, SequentialChatConfig, PatternConfig } from '../types/pattern.js';
+import type { Task, TaskResult } from '../types/task.js';
+
+import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
 
 /**
  * Sequential Chat Pattern Implementation
@@ -47,15 +38,9 @@ export class SequentialChat extends BasePattern {
    * @param context - Conversation context
    * @returns Pattern execution result
    */
-  async execute(
-    task: Task,
-    context: ConversationContext
-  ): Promise<PatternExecutionResult> {
+  async execute(task: Task, context: ConversationContext): Promise<PatternExecutionResult> {
     const config = context.execution.config as SequentialChatConfig;
-    const executionContext = this.createExecutionContext(
-      config,
-      context.conversationId
-    );
+    const executionContext = this.createExecutionContext(config, context.conversationId);
 
     try {
       // Validate configuration
@@ -74,18 +59,18 @@ export class SequentialChat extends BasePattern {
 
       // Execute agents sequentially
       for (let i = 0; i < agentSequence.length; i++) {
-        const agentId = agentSequence[i]!;  // Safe - i is within loop bounds
+        const agentId = agentSequence[i]!; // Safe - i is within loop bounds
         this.updateContextStep(executionContext, i + 1, totalSteps);
 
         try {
           // Verify agent exists
-          const agent = await this.capabilityRegistry.getAgent(agentId);
+          const agent = this.capabilityRegistry.getAgent(agentId);
           if (!agent) {
             throw new Error(`Agent '${agentId}' not found in registry`);
           }
 
           // Create task message for agent
-          const taskMessage = await this.createMessage(
+          const taskMessage = this.createMessage(
             'system',
             agentId,
             `Task: ${task.name}\n\nInput: ${previousOutput}`,
@@ -95,14 +80,10 @@ export class SequentialChat extends BasePattern {
           messages.push(taskMessage);
 
           // Simulate agent execution (in real implementation, this would call the actual agent)
-          const agentResult = await this.executeAgent(
-            agentId,
-            previousOutput,
-            config.stepTimeout
-          );
+          const agentResult = await this.executeAgent(agentId, previousOutput, config.stepTimeout);
 
           // Create result message from agent
-          const resultMessage = await this.createMessage(
+          const resultMessage = this.createMessage(
             agentId,
             'system',
             agentResult,
@@ -113,16 +94,11 @@ export class SequentialChat extends BasePattern {
 
           // Update previous output for next agent
           previousOutput = agentResult;
-
         } catch (error) {
           const err = error instanceof Error ? error : new Error(String(error));
 
           // Create error message
-          const errorMessage = await this.createErrorMessage(
-            agentId,
-            err,
-            context.conversationId
-          );
+          const errorMessage = this.createErrorMessage(agentId, err, context.conversationId);
           messages.push(errorMessage);
 
           // Stop on error if configured
@@ -149,7 +125,7 @@ export class SequentialChat extends BasePattern {
           ? executionContext.endTime.getTime() - executionContext.startTime.getTime()
           : 0,
         completedAt: new Date(),
-        executedBy: agentSequence[agentSequence.length - 1]!,  // Safe - agentSequence validated as non-empty
+        executedBy: agentSequence[agentSequence.length - 1]!, // Safe - agentSequence validated as non-empty
       };
 
       return {
@@ -158,7 +134,6 @@ export class SequentialChat extends BasePattern {
         messages,
         context: executionContext,
       };
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       return this.handleExecutionError(err, executionContext, context.conversationId);
@@ -201,11 +176,7 @@ export class SequentialChat extends BasePattern {
    * @param timeout - Optional timeout in milliseconds
    * @returns Agent's output
    */
-  private async executeAgent(
-    agentId: string,
-    input: string,
-    timeout?: number
-  ): Promise<string> {
+  private async executeAgent(agentId: string, input: string, timeout?: number): Promise<string> {
     // Placeholder implementation
     // In real implementation, this would invoke the agent's LLM
     const execution = async (): Promise<string> => {

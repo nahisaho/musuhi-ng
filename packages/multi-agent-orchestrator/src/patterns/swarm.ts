@@ -8,22 +8,18 @@
  * EARS: WHEN a task requires parallel autonomous execution, the system SHALL coordinate agent swarm
  */
 
-import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
-import type {
-  Task,
-  TaskResult,
-} from '../types/task.js';
-import {
-  OrchestrationPattern,
-  PatternExecutionStatus,
-} from '../types/pattern.js';
+import { MessageType } from '../types/message.js';
+import type { Message } from '../types/message.js';
+import { OrchestrationPattern, PatternExecutionStatus } from '../types/pattern.js';
 import type {
   ConversationContext,
   SwarmPatternConfig,
   PatternConfig,
+  PatternExecutionContext,
 } from '../types/pattern.js';
-import { MessageType } from '../types/message.js';
-import type { Message } from '../types/message.js';
+import type { Task, TaskResult } from '../types/task.js';
+
+import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
 
 /**
  * Agent execution result in swarm
@@ -65,15 +61,9 @@ export class SwarmPattern extends BasePattern {
    * @param context - Conversation context
    * @returns Pattern execution result
    */
-  async execute(
-    task: Task,
-    context: ConversationContext
-  ): Promise<PatternExecutionResult> {
+  async execute(task: Task, context: ConversationContext): Promise<PatternExecutionResult> {
     const config = context.execution.config as SwarmPatternConfig;
-    const executionContext = this.createExecutionContext(
-      config,
-      context.conversationId
-    );
+    const executionContext = this.createExecutionContext(config, context.conversationId);
 
     try {
       // Validate configuration
@@ -108,8 +98,7 @@ export class SwarmPattern extends BasePattern {
             agents,
             config,
             context.conversationId,
-            messages,
-            executionContext
+            messages
           );
           break;
 
@@ -119,14 +108,13 @@ export class SwarmPattern extends BasePattern {
             agents,
             config,
             context.conversationId,
-            messages,
-            executionContext
+            messages
           );
           break;
 
         default:
           throw new Error(
-            `Unknown coordination strategy: ${config.coordinationStrategy}`
+            `Unknown coordination strategy: ${config.coordinationStrategy as string}`
           );
       }
 
@@ -155,7 +143,6 @@ export class SwarmPattern extends BasePattern {
         messages,
         context: executionContext,
       };
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       return this.handleExecutionError(err, executionContext, context.conversationId);
@@ -206,8 +193,7 @@ export class SwarmPattern extends BasePattern {
     config: SwarmPatternConfig,
     conversationId: string,
     messages: Message[],
-    // @ts-ignore - TODO: Use executionContext for progress tracking
-    executionContext: any
+    executionContext: PatternExecutionContext
   ): Promise<string> {
     // Execute all agents in parallel
     const maxParallel = config.maxParallelTasks || agents.length;
@@ -222,13 +208,13 @@ export class SwarmPattern extends BasePattern {
 
         try {
           // Verify agent exists
-          const agent = await this.capabilityRegistry.getAgent(agentId);
+          const agent = this.capabilityRegistry.getAgent(agentId);
           if (!agent) {
             throw new Error(`Agent '${agentId}' not found in registry`);
           }
 
           // Create task message
-          const taskMessage = await this.createMessage(
+          const taskMessage = this.createMessage(
             'system',
             agentId,
             `Swarm task: ${task.description}`,
@@ -241,7 +227,7 @@ export class SwarmPattern extends BasePattern {
           const result = await this.executeAgent(agentId, task.description);
 
           // Create result message
-          const resultMessage = await this.createMessage(
+          const resultMessage = this.createMessage(
             agentId,
             'system',
             result,
@@ -256,16 +242,11 @@ export class SwarmPattern extends BasePattern {
             success: true,
             duration: Date.now() - startTime,
           };
-
         } catch (error) {
           const err = error instanceof Error ? error : new Error(String(error));
 
           // Create error message
-          const errorMessage = await this.createErrorMessage(
-            agentId,
-            err,
-            conversationId
-          );
+          const errorMessage = this.createErrorMessage(agentId, err, conversationId);
           messages.push(errorMessage);
 
           return {
@@ -281,13 +262,15 @@ export class SwarmPattern extends BasePattern {
       const batchResults = await Promise.all(batchPromises);
       agentResults.push(...batchResults);
 
-      this.updateContextStep(executionContext, Math.min(i + maxParallel, agents.length), agents.length);
+      this.updateContextStep(
+        executionContext,
+        Math.min(i + maxParallel, agents.length),
+        agents.length
+      );
     }
 
     // Aggregate results
-    const successfulResults = agentResults
-      .filter(r => r.success)
-      .map(r => r.result);
+    const successfulResults = agentResults.filter((r) => r.success).map((r) => r.result);
 
     return `Autonomous swarm completed with ${successfulResults.length}/${agents.length} successful agents.\n\n${successfulResults.join('\n---\n')}`;
   }
@@ -302,9 +285,7 @@ export class SwarmPattern extends BasePattern {
     agents: string[],
     config: SwarmPatternConfig,
     conversationId: string,
-    messages: Message[],
-    // @ts-ignore - TODO: Use executionContext for progress tracking
-    executionContext: any
+    messages: Message[]
   ): Promise<string> {
     // Execute all agents in parallel
     const agentResults: SwarmAgentResult[] = [];
@@ -313,12 +294,12 @@ export class SwarmPattern extends BasePattern {
       const startTime = Date.now();
 
       try {
-        const agent = await this.capabilityRegistry.getAgent(agentId);
+        const agent = this.capabilityRegistry.getAgent(agentId);
         if (!agent) {
           throw new Error(`Agent '${agentId}' not found in registry`);
         }
 
-        const taskMessage = await this.createMessage(
+        const taskMessage = this.createMessage(
           'system',
           agentId,
           `Consensus task: ${task.description}`,
@@ -329,7 +310,7 @@ export class SwarmPattern extends BasePattern {
 
         const result = await this.executeAgent(agentId, task.description);
 
-        const resultMessage = await this.createMessage(
+        const resultMessage = this.createMessage(
           agentId,
           'system',
           result,
@@ -344,15 +325,10 @@ export class SwarmPattern extends BasePattern {
           success: true,
           duration: Date.now() - startTime,
         };
-
       } catch (error) {
         const err = error instanceof Error ? error : new Error(String(error));
 
-        const errorMessage = await this.createErrorMessage(
-          agentId,
-          err,
-          conversationId
-        );
+        const errorMessage = this.createErrorMessage(agentId, err, conversationId);
         messages.push(errorMessage);
 
         return {
@@ -370,7 +346,7 @@ export class SwarmPattern extends BasePattern {
 
     // Check for consensus
     const quorumSize = config.quorumSize || Math.ceil(agents.length / 2);
-    const successfulResults = agentResults.filter(r => r.success);
+    const successfulResults = agentResults.filter((r) => r.success);
 
     if (successfulResults.length < quorumSize) {
       throw new Error(
@@ -380,7 +356,7 @@ export class SwarmPattern extends BasePattern {
 
     // Find most common result (simple consensus)
     const resultCounts = new Map<string, number>();
-    successfulResults.forEach(r => {
+    successfulResults.forEach((r) => {
       const count = resultCounts.get(r.result) || 0;
       resultCounts.set(r.result, count + 1);
     });
@@ -406,19 +382,19 @@ export class SwarmPattern extends BasePattern {
   private async executeLeaderElection(
     task: Task,
     agents: string[],
-    // @ts-ignore - TODO: Use config for leader election parameters
-    config: SwarmPatternConfig,
+    _config: SwarmPatternConfig,
     conversationId: string,
-    messages: Message[],
-    // @ts-ignore - TODO: Use executionContext for progress tracking
-    executionContext: any
+    messages: Message[]
   ): Promise<string> {
+    // Use _config for leader election parameters
+    // Future: _config.leaderElectionStrategy, _config.leaderCriteria, etc.
+
     // Elect leader (simple: first agent)
     const leaderId = agents[0]!; // Safe - agents.length validated in execute()
     const followerIds = agents.slice(1);
 
     // Create leader election message
-    const electionMessage = await this.createMessage(
+    const electionMessage = this.createMessage(
       'system',
       leaderId,
       `Elected as swarm leader. Task: ${task.description}`,
@@ -430,7 +406,7 @@ export class SwarmPattern extends BasePattern {
     // Leader executes task
     const leaderResult = await this.executeAgent(leaderId, task.description);
 
-    const leaderResultMessage = await this.createMessage(
+    const leaderResultMessage = this.createMessage(
       leaderId,
       'system',
       leaderResult,
@@ -444,12 +420,12 @@ export class SwarmPattern extends BasePattern {
 
     for (const followerId of followerIds) {
       try {
-        const agent = await this.capabilityRegistry.getAgent(followerId);
+        const agent = this.capabilityRegistry.getAgent(followerId);
         if (!agent) {
           continue;
         }
 
-        const followerTask = await this.createMessage(
+        const followerTask = this.createMessage(
           leaderId,
           followerId,
           `Follow leader's direction: ${leaderResult}`,
@@ -458,12 +434,9 @@ export class SwarmPattern extends BasePattern {
         );
         messages.push(followerTask);
 
-        const followerResult = await this.executeAgent(
-          followerId,
-          `Leader said: ${leaderResult}`
-        );
+        const followerResult = await this.executeAgent(followerId, `Leader said: ${leaderResult}`);
 
-        const followerResultMessage = await this.createMessage(
+        const followerResultMessage = this.createMessage(
           followerId,
           leaderId,
           followerResult,
@@ -473,7 +446,6 @@ export class SwarmPattern extends BasePattern {
         messages.push(followerResultMessage);
 
         followerResults.push(followerResult);
-
       } catch (error) {
         // Continue with other followers
       }
@@ -489,10 +461,7 @@ export class SwarmPattern extends BasePattern {
    * @param input - Input for the agent
    * @returns Agent's output
    */
-  private async executeAgent(
-    agentId: string,
-    input: string
-  ): Promise<string> {
+  private async executeAgent(agentId: string, input: string): Promise<string> {
     // Placeholder implementation
     await this.wait(10);
     return `[${agentId}] Swarm result: "${input.substring(0, 40)}${input.length > 40 ? '...' : ''}"`;

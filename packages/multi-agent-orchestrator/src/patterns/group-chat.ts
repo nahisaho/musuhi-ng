@@ -8,24 +8,17 @@
  * EARS: WHEN a task requires multi-agent discussion, the system SHALL coordinate speaker selection
  */
 
-import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
-import type {
-  Task,
-  TaskResult,
-} from '../types/task.js';
+import { MessageType } from '../types/message.js';
+import type { Message } from '../types/message.js';
+import type { ConversationContext, GroupChatConfig, PatternConfig } from '../types/pattern.js';
 import {
   OrchestrationPattern,
   PatternExecutionStatus,
-} from '../types/pattern.js';
-import type {
-  ConversationContext,
-  GroupChatConfig,
-  PatternConfig,
-  // @ts-expect-error - Type imported for future use
   SpeakerSelectionStrategy,
 } from '../types/pattern.js';
-import { MessageType } from '../types/message.js';
-import type { Message } from '../types/message.js';
+import type { Task, TaskResult } from '../types/task.js';
+
+import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
 
 /**
  * Group Chat Pattern Implementation
@@ -68,15 +61,9 @@ export class GroupChat extends BasePattern {
    * @param context - Conversation context
    * @returns Pattern execution result
    */
-  async execute(
-    task: Task,
-    context: ConversationContext
-  ): Promise<PatternExecutionResult> {
+  async execute(task: Task, context: ConversationContext): Promise<PatternExecutionResult> {
     const config = context.execution.config as GroupChatConfig;
-    const executionContext = this.createExecutionContext(
-      config,
-      context.conversationId
-    );
+    const executionContext = this.createExecutionContext(config, context.conversationId);
 
     try {
       // Validate configuration
@@ -104,11 +91,7 @@ export class GroupChat extends BasePattern {
         this.updateContextStep(executionContext, this.currentRound, maxRounds);
 
         // Select next speaker
-        const speaker = await this.selectNextSpeaker(
-          config,
-          context.conversationId,
-          lastOutput
-        );
+        const speaker = this.selectNextSpeaker(config, context.conversationId, lastOutput);
 
         if (!speaker) {
           // No more speakers available
@@ -118,13 +101,13 @@ export class GroupChat extends BasePattern {
 
         try {
           // Verify agent exists
-          const agent = await this.capabilityRegistry.getAgent(speaker);
+          const agent = this.capabilityRegistry.getAgent(speaker);
           if (!agent) {
             throw new Error(`Agent '${speaker}' not found in registry`);
           }
 
           // Create task message for speaker
-          const taskMessage = await this.createMessage(
+          const taskMessage = this.createMessage(
             config.managerId || 'system',
             speaker,
             `Round ${this.currentRound}: ${lastOutput}`,
@@ -134,14 +117,10 @@ export class GroupChat extends BasePattern {
           messages.push(taskMessage);
 
           // Execute speaker
-          const speakerResult = await this.executeAgent(
-            speaker,
-            lastOutput,
-            config
-          );
+          const speakerResult = await this.executeAgent(speaker, lastOutput, config);
 
           // Create result message from speaker
-          const resultMessage = await this.createMessage(
+          const resultMessage = this.createMessage(
             speaker,
             config.managerId || 'system',
             speakerResult,
@@ -159,20 +138,12 @@ export class GroupChat extends BasePattern {
           }
 
           // Check if conversation is complete
-          conversationComplete = this.isConversationComplete(
-            speakerResult,
-            config
-          );
-
+          conversationComplete = this.isConversationComplete(speakerResult, config);
         } catch (error) {
           const err = error instanceof Error ? error : new Error(String(error));
 
           // Create error message
-          const errorMessage = await this.createErrorMessage(
-            speaker,
-            err,
-            context.conversationId
-          );
+          const errorMessage = this.createErrorMessage(speaker, err, context.conversationId);
           messages.push(errorMessage);
 
           // Continue to next round
@@ -210,7 +181,6 @@ export class GroupChat extends BasePattern {
         messages,
         context: executionContext,
       };
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       return this.handleExecutionError(err, executionContext, context.conversationId);
@@ -255,42 +225,38 @@ export class GroupChat extends BasePattern {
    * @param context - Current conversation context
    * @returns Selected speaker ID or null if none available
    */
-  private async selectNextSpeaker(
-    // @ts-ignore - TODO: Use conversationId for history lookup
+  private selectNextSpeaker(
     config: GroupChatConfig,
     _conversationId: string,
     context: string
-  ): Promise<string | null> {
+  ): string | null {
+    // Use _conversationId for potential history lookup in future
+    // Currently using spokenThisRound for tracking, but _conversationId
+    // could be used to query message history for more sophisticated selection
+
     const availableParticipants = config.allowMultipleTurns
       ? config.participants
-      : config.participants.filter(p => !this.spokenThisRound.has(p));
+      : config.participants.filter((p) => !this.spokenThisRound.has(p));
 
     if (availableParticipants.length === 0) {
       return null;
     }
 
     switch (config.selectionStrategy) {
-      case 'round_robin':
+      case SpeakerSelectionStrategy.ROUND_ROBIN:
         return this.selectRoundRobin(availableParticipants);
 
-      case 'random':
+      case SpeakerSelectionStrategy.RANDOM:
         return this.selectRandom(availableParticipants);
 
-      case 'manager_driven':
-        return this.selectManagerDriven(
-          config,
-          availableParticipants,
-          context
-        );
+      case SpeakerSelectionStrategy.MANAGER_DRIVEN:
+        return this.selectManagerDriven(config, availableParticipants, context);
 
-      case 'volunteer':
+      case SpeakerSelectionStrategy.VOLUNTEER:
         return this.selectVolunteer(availableParticipants);
 
-      case 'capability_based':
-        return this.selectCapabilityBased(
-          availableParticipants,
-          context
-        );
+      case SpeakerSelectionStrategy.CAPABILITY_BASED:
+        return this.selectCapabilityBased(availableParticipants, context);
 
       default:
         // Default to round-robin
@@ -302,7 +268,7 @@ export class GroupChat extends BasePattern {
    * Round-robin speaker selection
    */
   private selectRoundRobin(participants: string[]): string {
-    const speaker = participants[this.currentSpeakerIndex % participants.length]!;  // Safe - modulo ensures valid index
+    const speaker = participants[this.currentSpeakerIndex % participants.length]!; // Safe - modulo ensures valid index
     this.currentSpeakerIndex++;
     return speaker;
   }
@@ -312,7 +278,7 @@ export class GroupChat extends BasePattern {
    */
   private selectRandom(participants: string[]): string {
     const index = Math.floor(Math.random() * participants.length);
-    return participants[index]!;  // Safe - Math.floor returns valid index
+    return participants[index]!; // Safe - Math.floor returns valid index
   }
 
   /**
@@ -323,15 +289,18 @@ export class GroupChat extends BasePattern {
    * 2. Manager selects most appropriate next speaker
    * 3. Return manager's selection
    */
-    // @ts-ignore - TODO: Use config for volunteer strategy
-  private async selectManagerDriven(
-    // @ts-ignore - TODO: Use context for state management
-    config: GroupChatConfig,
+  private selectManagerDriven(
+    _config: GroupChatConfig,
     participants: string[],
     _context: string
-  ): Promise<string> {
-    // Placeholder: In real implementation, ask manager LLM
-    // For now, use round-robin
+  ): string {
+    // Use _config for manager settings (e.g., manager agent ID, selection criteria)
+    // Use _context to inform manager's decision about next speaker
+    // Placeholder: In real implementation, ask manager LLM with _context
+
+    // For now, use round-robin as fallback
+    // Future: _config.managerAgentId would specify which agent acts as manager
+
     return this.selectRoundRobin(participants);
   }
 
@@ -343,7 +312,7 @@ export class GroupChat extends BasePattern {
    * 2. Collect volunteers
    * 3. Select from volunteers (or random if multiple)
    */
-  private async selectVolunteer(participants: string[]): Promise<string> {
+  private selectVolunteer(participants: string[]): string {
     // Placeholder: In real implementation, query participants
     // For now, use random
     return this.selectRandom(participants);
@@ -353,37 +322,29 @@ export class GroupChat extends BasePattern {
    * Capability-based speaker selection
    *
    * Selects agent whose capabilities best match current context.
-    // @ts-ignore - TODO: Use context for capability lookup
    */
-  private async selectCapabilityBased(
-    participants: string[],
-    _context: string
-  ): Promise<string> {
-    // Placeholder: In real implementation, match capabilities to context
+  private selectCapabilityBased(participants: string[], _context: string): string {
+    // Use _context for capability matching
+    // Placeholder: In real implementation, match agent capabilities to _context keywords
+    // For example: analyze _context for "code", "test", "review" and select matching agent
+
     // For now, use first participant
-    return participants[0]!;  // Safe - Math.floor returns valid index
+    return participants[0]!;
   }
 
   /**
    * Check if conversation is complete
    *
-    // @ts-ignore - TODO: Use config for selection tuning
    * Determines if the group conversation has reached a conclusion.
    */
-  private isConversationComplete(
-    lastOutput: string,
-    _config: GroupChatConfig
-  ): boolean {
-    // Check for termination keywords
-    const terminationKeywords = [
-      'TERMINATE',
-      'CONVERSATION_COMPLETE',
-      'TASK_COMPLETE',
-    ];
+  private isConversationComplete(lastOutput: string, _config: GroupChatConfig): boolean {
+    // Use _config for custom termination criteria
+    // Future: _config.terminationKeywords, _config.maxRounds, etc.
 
-    return terminationKeywords.some(keyword =>
-      lastOutput.toUpperCase().includes(keyword)
-    );
+    // Check for termination keywords
+    const terminationKeywords = ['TERMINATE', 'CONVERSATION_COMPLETE', 'TASK_COMPLETE'];
+
+    return terminationKeywords.some((keyword) => lastOutput.toUpperCase().includes(keyword));
   }
 
   /**
@@ -392,7 +353,6 @@ export class GroupChat extends BasePattern {
    * @param agentId - Agent ID
    * @param input - Input for the agent
    * @param config - Group chat configuration
-    // @ts-ignore - TODO: Use config for random seed
    * @returns Agent's output
    */
   private async executeAgent(
@@ -400,6 +360,9 @@ export class GroupChat extends BasePattern {
     input: string,
     _config: GroupChatConfig
   ): Promise<string> {
+    // Use _config for agent execution settings
+    // Future: _config.temperature, _config.randomSeed, _config.maxTokens, etc.
+
     // Placeholder implementation
     // In real implementation, this would invoke the agent's LLM
     await this.wait(10); // Simulate processing

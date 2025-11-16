@@ -8,23 +8,18 @@
  * EARS: WHEN a task requires state-based execution, the system SHALL manage FSM transitions
  */
 
-import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
-import type {
-  Task,
-  TaskResult,
-} from '../types/task.js';
-import {
-  OrchestrationPattern,
-  PatternExecutionStatus,
-} from '../types/pattern.js';
+import { MessageType } from '../types/message.js';
+import type { Message } from '../types/message.js';
+import { OrchestrationPattern, PatternExecutionStatus } from '../types/pattern.js';
 import type {
   ConversationContext,
   FSMPatternConfig,
   FSMTransition,
   PatternConfig,
 } from '../types/pattern.js';
-import { MessageType } from '../types/message.js';
-import type { Message } from '../types/message.js';
+import type { Task, TaskResult } from '../types/task.js';
+
+import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
 
 /**
  * FSM execution state
@@ -66,15 +61,9 @@ export class FSMPattern extends BasePattern {
    * @param context - Conversation context
    * @returns Pattern execution result
    */
-  async execute(
-    task: Task,
-    context: ConversationContext
-  ): Promise<PatternExecutionResult> {
+  async execute(task: Task, context: ConversationContext): Promise<PatternExecutionResult> {
     const config = context.execution.config as FSMPatternConfig;
-    const executionContext = this.createExecutionContext(
-      config,
-      context.conversationId
-    );
+    const executionContext = this.createExecutionContext(config, context.conversationId);
 
     try {
       // Validate configuration
@@ -106,13 +95,13 @@ export class FSMPattern extends BasePattern {
         }
 
         // Verify agent exists
-        const agent = await this.capabilityRegistry.getAgent(agentId);
+        const agent = this.capabilityRegistry.getAgent(agentId);
         if (!agent) {
           throw new Error(`Agent '${agentId}' not found in registry`);
         }
 
         // Create state entry message
-        const stateMessage = await this.createMessage(
+        const stateMessage = this.createMessage(
           'system',
           agentId,
           `Entering state '${currentState}'. Task: ${task.description}`,
@@ -130,7 +119,7 @@ export class FSMPattern extends BasePattern {
         );
 
         // Create result message
-        const resultMessage = await this.createMessage(
+        const resultMessage = this.createMessage(
           agentId,
           'system',
           stateResult.output,
@@ -200,7 +189,7 @@ export class FSMPattern extends BasePattern {
           ? executionContext.endTime.getTime() - executionContext.startTime.getTime()
           : 0,
         completedAt: new Date(),
-        executedBy: config.stateAgents[fsmState.currentState]!,  // Safe - agentId validated earlier
+        executedBy: config.stateAgents[fsmState.currentState]!, // Safe - agentId validated earlier
       };
 
       return {
@@ -209,7 +198,6 @@ export class FSMPattern extends BasePattern {
         messages,
         context: executionContext,
       };
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       return this.handleExecutionError(err, executionContext, context.conversationId);
@@ -274,9 +262,8 @@ export class FSMPattern extends BasePattern {
   private async executeStateAgent(
     agentId: string,
     state: string,
-    // @ts-ignore - TODO: Use stateData for state management
     task: Task,
-    _stateData: Record<string, unknown>
+    stateData: Record<string, unknown>
   ): Promise<{ output: string; data: Record<string, unknown> }> {
     // Placeholder implementation
     await this.wait(10);
@@ -284,8 +271,9 @@ export class FSMPattern extends BasePattern {
     // Simulate state-specific processing
     const output = `[${agentId}] Executed state '${state}': ${task.description.substring(0, 30)}...`;
 
-    // Simulate state data updates
+    // Merge previous state data with new updates
     const data: Record<string, unknown> = {
+      ...stateData,
       [`${state}_completed`]: true,
       [`${state}_timestamp`]: new Date().toISOString(),
     };
@@ -307,9 +295,7 @@ export class FSMPattern extends BasePattern {
     stateData: Record<string, unknown>
   ): FSMTransition | null {
     // Find transitions from current state
-    const candidateTransitions = transitions.filter(
-      t => t.from === currentState
-    );
+    const candidateTransitions = transitions.filter((t) => t.from === currentState);
 
     if (candidateTransitions.length === 0) {
       return null;
@@ -339,10 +325,7 @@ export class FSMPattern extends BasePattern {
    * @param stateData - Current state data
    * @returns Whether condition is met
    */
-  private evaluateCondition(
-    condition: string,
-    stateData: Record<string, unknown>
-  ): boolean {
+  private evaluateCondition(condition: string, stateData: Record<string, unknown>): boolean {
     // Placeholder: Always transition
     // In real implementation, evaluate condition expression
     // e.g., "data.status === 'success'" or "data.count > 5"
@@ -370,9 +353,8 @@ export class FSMPattern extends BasePattern {
    * @param conversationId - Conversation ID
    */
   private async executeTransitionAction(
-    // @ts-ignore - TODO: Use fsmState for transition validation
     transition: FSMTransition,
-    _fsmState: FSMExecutionState,
+    fsmState: FSMExecutionState,
     messages: Message[],
     conversationId: string
   ): Promise<void> {
@@ -380,8 +362,15 @@ export class FSMPattern extends BasePattern {
       return;
     }
 
+    // Validate transition against current FSM state
+    if (fsmState.currentState !== transition.from) {
+      throw new Error(
+        `Invalid transition: Expected state '${transition.from}' but current state is '${fsmState.currentState}'`
+      );
+    }
+
     // Create action message
-    const actionMessage = await this.createMessage(
+    const actionMessage = this.createMessage(
       'system',
       'system',
       `Transition action: ${transition.action} (${transition.from} → ${transition.to})`,

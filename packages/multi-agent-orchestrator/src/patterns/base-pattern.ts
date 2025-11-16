@@ -9,29 +9,19 @@
  * extend this base class.
  */
 
-import type {
-  Task,
-  TaskResult,
-} from '../types/task.js';
-import {
-  PatternExecutionStatus,
-} from '../types/pattern.js';
+import { ConversationHistory } from '../core/conversation-history.js';
+import { CapabilityRegistry } from '../registry/capability-registry.js';
+import { ToolRegistry } from '../registry/tool-registry.js';
+import { MessageType, MessageStatus } from '../types/message.js';
+import type { Message } from '../types/message.js';
+import { PatternExecutionStatus } from '../types/pattern.js';
 import type {
   PatternConfig,
   PatternExecutionContext,
   OrchestrationPattern,
   ConversationContext,
 } from '../types/pattern.js';
-import {
-  MessageType,
-  MessageStatus,
-} from '../types/message.js';
-import type {
-  Message,
-} from '../types/message.js';
-import { ConversationHistory } from '../core/conversation-history.js';
-import { ToolRegistry } from '../registry/tool-registry.js';
-import { CapabilityRegistry } from '../registry/capability-registry.js';
+import type { Task, TaskResult } from '../types/task.js';
 
 /**
  * Pattern execution result
@@ -107,10 +97,7 @@ export abstract class BasePattern {
    * @param context - Conversation context
    * @returns Execution result
    */
-  abstract execute(
-    task: Task,
-    context: ConversationContext
-  ): Promise<PatternExecutionResult>;
+  abstract execute(task: Task, context: ConversationContext): Promise<PatternExecutionResult>;
 
   /**
    * Validate pattern configuration
@@ -134,13 +121,13 @@ export abstract class BasePattern {
    * @param conversationId - Conversation ID
    * @returns Created message
    */
-  protected async createMessage(
+  protected createMessage(
     sender: string,
     receiver: string,
     content: string,
     type: MessageType,
     conversationId: string
-  ): Promise<Message> {
+  ): Message {
     const message: Message = {
       id: this.generateMessageId(),
       type,
@@ -152,7 +139,7 @@ export abstract class BasePattern {
       conversationId,
     };
 
-    await this.conversationHistory.addMessage(message);
+    this.conversationHistory.addMessage(message);
     return message;
   }
 
@@ -166,11 +153,7 @@ export abstract class BasePattern {
    * @param conversationId - Conversation ID
    * @returns Created error message
    */
-  protected async createErrorMessage(
-    sender: string,
-    error: Error,
-    conversationId: string
-  ): Promise<Message> {
+  protected createErrorMessage(sender: string, error: Error, conversationId: string): Message {
     return this.createMessage(
       sender,
       'system',
@@ -218,7 +201,11 @@ export abstract class BasePattern {
     status: PatternExecutionStatus
   ): void {
     context.status = status;
-    if (status === 'completed' || status === PatternExecutionStatus.FAILED || status === 'cancelled') {
+    if (
+      status === PatternExecutionStatus.COMPLETED ||
+      status === PatternExecutionStatus.FAILED ||
+      status === PatternExecutionStatus.CANCELLED
+    ) {
       context.endTime = new Date();
     }
   }
@@ -253,19 +240,15 @@ export abstract class BasePattern {
    * @param conversationId - Conversation ID
    * @returns Pattern execution result with error
    */
-  protected async handleExecutionError(
+  protected handleExecutionError(
     error: Error,
     context: PatternExecutionContext,
     conversationId: string
-  ): Promise<PatternExecutionResult> {
+  ): PatternExecutionResult {
     this.updateContextStatus(context, PatternExecutionStatus.FAILED);
     context.error = error;
 
-    const errorMessage = await this.createErrorMessage(
-      'system',
-      error,
-      conversationId
-    );
+    const errorMessage = this.createErrorMessage('system', error, conversationId);
 
     return {
       success: false,
@@ -301,7 +284,7 @@ export abstract class BasePattern {
    * @param ms - Milliseconds to wait
    */
   protected async wait(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**

@@ -8,22 +8,13 @@
  * EARS: WHEN a task requires hierarchical delegation, the system SHALL manage nested agent execution
  */
 
-import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
-import type {
-  Task,
-  TaskResult,
-} from '../types/task.js';
-import {
-  OrchestrationPattern,
-  PatternExecutionStatus,
-} from '../types/pattern.js';
-import type {
-  ConversationContext,
-  NestedChatConfig,
-  PatternConfig,
-} from '../types/pattern.js';
 import { MessageType } from '../types/message.js';
 import type { Message } from '../types/message.js';
+import { OrchestrationPattern, PatternExecutionStatus } from '../types/pattern.js';
+import type { ConversationContext, NestedChatConfig, PatternConfig } from '../types/pattern.js';
+import type { Task, TaskResult } from '../types/task.js';
+
+import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
 
 /**
  * Nested execution context
@@ -64,15 +55,9 @@ export class NestedChat extends BasePattern {
    * @param context - Conversation context
    * @returns Pattern execution result
    */
-  async execute(
-    task: Task,
-    context: ConversationContext
-  ): Promise<PatternExecutionResult> {
+  async execute(task: Task, context: ConversationContext): Promise<PatternExecutionResult> {
     const config = context.execution.config as NestedChatConfig;
-    const executionContext = this.createExecutionContext(
-      config,
-      context.conversationId
-    );
+    const executionContext = this.createExecutionContext(config, context.conversationId);
 
     try {
       // Validate configuration
@@ -129,7 +114,6 @@ export class NestedChat extends BasePattern {
         messages,
         context: executionContext,
       };
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       return this.handleExecutionError(err, executionContext, context.conversationId);
@@ -176,7 +160,7 @@ export class NestedChat extends BasePattern {
     messages: Message[]
   ): Promise<string> {
     // Verify agent exists
-    const agent = await this.capabilityRegistry.getAgent(agentId);
+    const agent = this.capabilityRegistry.getAgent(agentId);
     if (!agent) {
       throw new Error(`Agent '${agentId}' not found in registry`);
     }
@@ -184,13 +168,11 @@ export class NestedChat extends BasePattern {
     // Check depth limit
     const maxDepth = config.maxDepth || 5;
     if (nestedContext.depth >= maxDepth) {
-      throw new Error(
-        `Maximum nesting depth (${maxDepth}) exceeded at agent '${agentId}'`
-      );
+      throw new Error(`Maximum nesting depth (${maxDepth}) exceeded at agent '${agentId}'`);
     }
 
     // Create task message
-    const taskMessage = await this.createMessage(
+    const taskMessage = this.createMessage(
       nestedContext.parentAgentId || 'system',
       agentId,
       `[Depth ${nestedContext.depth}] Task: ${task.name}\n${task.description}`,
@@ -241,14 +223,10 @@ export class NestedChat extends BasePattern {
       }
 
       // Aggregate subtask results
-      const aggregatedResult = await this.aggregateResults(
-        agentId,
-        task,
-        subtaskResults
-      );
+      const aggregatedResult = this.aggregateResults(agentId, task, subtaskResults);
 
       // Create result message
-      const resultMessage = await this.createMessage(
+      const resultMessage = this.createMessage(
         agentId,
         nestedContext.parentAgentId || 'system',
         aggregatedResult,
@@ -260,13 +238,10 @@ export class NestedChat extends BasePattern {
       return aggregatedResult;
     } else {
       // No subtasks - execute agent directly
-      const agentResult = await this.executeAgent(
-        agentId,
-        task.description
-      );
+      const agentResult = await this.executeAgent(agentId, task.description);
 
       // Create result message
-      const resultMessage = await this.createMessage(
+      const resultMessage = this.createMessage(
         agentId,
         nestedContext.parentAgentId || 'system',
         agentResult,
@@ -294,7 +269,7 @@ export class NestedChat extends BasePattern {
   private selectChildAgent(subtask: Task, parentAgentId: string): string {
     // If subtask has assigned agents, use the first one
     if (subtask.assignedAgents && subtask.assignedAgents.length > 0) {
-      return subtask.assignedAgents[0]!;  // Safe - length check ensures element exists
+      return subtask.assignedAgents[0]!; // Safe - length check ensures element exists
     }
 
     // Otherwise, use parent agent (self-delegation)
@@ -311,16 +286,15 @@ export class NestedChat extends BasePattern {
    * @param childResults - Results from child agents
    * @returns Aggregated result
    */
-  private async aggregateResults(
-    // @ts-ignore - TODO: Use task for context aggregation
-    agentId: string,
-    _task: Task,
-    childResults: string[]
-  ): Promise<string> {
+  private aggregateResults(agentId: string, task: Task, childResults: string[]): string {
+    // Use task context for aggregation strategy
+    // Future: task.aggregationStrategy, task.priority for weighted aggregation
+    const taskContext = task.description.substring(0, 50);
+
     // Placeholder implementation
     // In real implementation, parent agent would synthesize child results
     const summary = childResults.join('\n---\n');
-    return `[${agentId}] Aggregated ${childResults.length} subtask results:\n${summary}`;
+    return `[${agentId}] Aggregated ${childResults.length} subtask results for "${taskContext}":\n${summary}`;
   }
 
   /**
@@ -331,8 +305,8 @@ export class NestedChat extends BasePattern {
 
     for (const childResult of context.childResults) {
       if (childResult.data && typeof childResult.data === 'object') {
-        const childData = childResult.data as any;
-        if (childData.maxDepthReached !== undefined) {
+        const childData = childResult.data as Record<string, unknown>;
+        if (typeof childData.maxDepthReached === 'number') {
           maxDepth = Math.max(maxDepth, childData.maxDepthReached);
         }
       }
@@ -348,10 +322,7 @@ export class NestedChat extends BasePattern {
    * @param input - Input for the agent
    * @returns Agent's output
    */
-  private async executeAgent(
-    agentId: string,
-    input: string
-  ): Promise<string> {
+  private async executeAgent(agentId: string, input: string): Promise<string> {
     // Placeholder implementation
     await this.wait(10);
     return `[${agentId}] Processed: "${input.substring(0, 50)}${input.length > 50 ? '...' : ''}"`;

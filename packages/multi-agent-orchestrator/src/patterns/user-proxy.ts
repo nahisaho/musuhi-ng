@@ -8,22 +8,13 @@
  * EARS: WHEN a task requires human approval, the system SHALL wait for explicit approval
  */
 
-import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
-import type {
-  Task,
-  TaskResult,
-} from '../types/task.js';
-import {
-  OrchestrationPattern,
-  PatternExecutionStatus,
-} from '../types/pattern.js';
-import type {
-  ConversationContext,
-  UserProxyConfig,
-  PatternConfig,
-} from '../types/pattern.js';
 import { MessageType } from '../types/message.js';
 import type { Message } from '../types/message.js';
+import { OrchestrationPattern, PatternExecutionStatus } from '../types/pattern.js';
+import type { ConversationContext, UserProxyConfig, PatternConfig } from '../types/pattern.js';
+import type { Task, TaskResult } from '../types/task.js';
+
+import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
 
 /**
  * Approval request
@@ -74,15 +65,9 @@ export class UserProxyPattern extends BasePattern {
    * @param context - Conversation context
    * @returns Pattern execution result
    */
-  async execute(
-    task: Task,
-    context: ConversationContext
-  ): Promise<PatternExecutionResult> {
+  async execute(task: Task, context: ConversationContext): Promise<PatternExecutionResult> {
     const config = context.execution.config as UserProxyConfig;
-    const executionContext = this.createExecutionContext(
-      config,
-      context.conversationId
-    );
+    const executionContext = this.createExecutionContext(config, context.conversationId);
 
     try {
       // Validate configuration
@@ -94,7 +79,7 @@ export class UserProxyPattern extends BasePattern {
       const messages: Message[] = [];
 
       // Verify agent exists
-      const agent = await this.capabilityRegistry.getAgent(config.agentId);
+      const agent = this.capabilityRegistry.getAgent(config.agentId);
       if (!agent) {
         throw new Error(`Agent '${config.agentId}' not found in registry`);
       }
@@ -163,7 +148,7 @@ export class UserProxyPattern extends BasePattern {
       }
 
       // Execute agent (approval granted or not required)
-      const taskMessage = await this.createMessage(
+      const taskMessage = this.createMessage(
         'user',
         config.agentId,
         task.description,
@@ -172,12 +157,9 @@ export class UserProxyPattern extends BasePattern {
       );
       messages.push(taskMessage);
 
-      const agentResult = await this.executeAgent(
-        config.agentId,
-        task.description
-      );
+      const agentResult = await this.executeAgent(config.agentId, task.description);
 
-      const resultMessage = await this.createMessage(
+      const resultMessage = this.createMessage(
         config.agentId,
         'user',
         agentResult,
@@ -211,7 +193,6 @@ export class UserProxyPattern extends BasePattern {
         messages,
         context: executionContext,
       };
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       return this.handleExecutionError(err, executionContext, context.conversationId);
@@ -281,7 +262,7 @@ export class UserProxyPattern extends BasePattern {
     this.approvalRequests.set(requestId, approvalRequest);
 
     // Create approval request message
-    const requestMessage = await this.createMessage(
+    const requestMessage = this.createMessage(
       'system',
       'user',
       `Approval required: Agent '${agentId}' wants to execute:\n${action}\n\n[Approve/Reject]`,
@@ -297,7 +278,7 @@ export class UserProxyPattern extends BasePattern {
     try {
       const approval = await this.waitForApproval(requestId, timeout);
 
-      const responseMessage = await this.createMessage(
+      const responseMessage = this.createMessage(
         'user',
         'system',
         approval.status === 'approved' ? 'Approved' : 'Rejected',
@@ -307,12 +288,11 @@ export class UserProxyPattern extends BasePattern {
       messages.push(responseMessage);
 
       return approval;
-
     } catch (error) {
       // Timeout occurred
       approvalRequest.status = 'timeout';
 
-      const timeoutMessage = await this.createMessage(
+      const timeoutMessage = this.createMessage(
         'system',
         'user',
         `Approval timeout after ${timeout}ms. Using default action: ${config.defaultAction || 'reject'}`,
@@ -335,10 +315,7 @@ export class UserProxyPattern extends BasePattern {
    * @param timeout - Timeout in milliseconds
    * @returns Approval request
    */
-  private async waitForApproval(
-    requestId: string,
-    timeout: number
-  ): Promise<ApprovalRequest> {
+  private async waitForApproval(requestId: string, timeout: number): Promise<ApprovalRequest> {
     return new Promise((resolve, reject) => {
       // Placeholder: Auto-approve after small delay
       setTimeout(() => {
@@ -369,10 +346,7 @@ export class UserProxyPattern extends BasePattern {
    * @param input - Input for the agent
    * @returns Agent's output
    */
-  private async executeAgent(
-    agentId: string,
-    input: string
-  ): Promise<string> {
+  private async executeAgent(agentId: string, input: string): Promise<string> {
     // Placeholder implementation
     await this.wait(10);
     return `[${agentId}] Executed with approval: "${input.substring(0, 50)}${input.length > 50 ? '...' : ''}"`;

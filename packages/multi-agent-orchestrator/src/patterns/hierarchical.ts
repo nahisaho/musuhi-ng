@@ -8,22 +8,17 @@
  * EARS: WHEN a task requires hierarchical command chain, the system SHALL manage parent-child delegation
  */
 
-import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
-import type {
-  Task,
-  TaskResult,
-} from '../types/task.js';
-import {
-  OrchestrationPattern,
-  PatternExecutionStatus,
-} from '../types/pattern.js';
+import { MessageType } from '../types/message.js';
+import type { Message } from '../types/message.js';
+import { OrchestrationPattern, PatternExecutionStatus } from '../types/pattern.js';
 import type {
   ConversationContext,
   HierarchicalPatternConfig,
   PatternConfig,
 } from '../types/pattern.js';
-import { MessageType } from '../types/message.js';
-import type { Message } from '../types/message.js';
+import type { Task, TaskResult } from '../types/task.js';
+
+import { BasePattern, type PatternExecutionResult } from './base-pattern.js';
 
 /**
  * Hierarchical execution node
@@ -62,15 +57,9 @@ export class HierarchicalPattern extends BasePattern {
    * @param context - Conversation context
    * @returns Pattern execution result
    */
-  async execute(
-    task: Task,
-    context: ConversationContext
-  ): Promise<PatternExecutionResult> {
+  async execute(task: Task, context: ConversationContext): Promise<PatternExecutionResult> {
     const config = context.execution.config as HierarchicalPatternConfig;
-    const executionContext = this.createExecutionContext(
-      config,
-      context.conversationId
-    );
+    const executionContext = this.createExecutionContext(config, context.conversationId);
 
     try {
       // Validate configuration
@@ -87,15 +76,13 @@ export class HierarchicalPattern extends BasePattern {
       // Validate hierarchy depth
       const maxDepth = this.getMaxDepth(hierarchyTree);
       if (config.maxDepth && maxDepth > config.maxDepth) {
-        throw new Error(
-          `Hierarchy depth (${maxDepth}) exceeds maximum (${config.maxDepth})`
-        );
+        throw new Error(`Hierarchy depth (${maxDepth}) exceeds maximum (${config.maxDepth})`);
       }
 
       this.updateContextStep(executionContext, 0, hierarchyTree.length);
 
       // Execute hierarchy top-down
-      const rootNode = hierarchyTree[0]!;  // Safe - buildHierarchy ensures root exists
+      const rootNode = hierarchyTree[0]!; // Safe - buildHierarchy ensures root exists
       await this.executeHierarchyNode(
         rootNode,
         task,
@@ -129,7 +116,6 @@ export class HierarchicalPattern extends BasePattern {
         messages,
         context: executionContext,
       };
-
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       return this.handleExecutionError(err, executionContext, context.conversationId);
@@ -188,9 +174,7 @@ export class HierarchicalPattern extends BasePattern {
 
       // Prevent cycles
       if (visited.has(current.agentId)) {
-        throw new Error(
-          `Cycle detected in hierarchy at agent '${current.agentId}'`
-        );
+        throw new Error(`Cycle detected in hierarchy at agent '${current.agentId}'`);
       }
 
       visited.add(current.agentId);
@@ -223,7 +207,7 @@ export class HierarchicalPattern extends BasePattern {
    * Get maximum depth of hierarchy
    */
   private getMaxDepth(nodes: HierarchicalNode[]): number {
-    return Math.max(...nodes.map(n => n.depth));
+    return Math.max(...nodes.map((n) => n.depth));
   }
 
   /**
@@ -246,13 +230,13 @@ export class HierarchicalPattern extends BasePattern {
     messages: Message[]
   ): Promise<string> {
     // Verify agent exists
-    const agent = await this.capabilityRegistry.getAgent(node.agentId);
+    const agent = this.capabilityRegistry.getAgent(node.agentId);
     if (!agent) {
       throw new Error(`Agent '${node.agentId}' not found in registry`);
     }
 
     // Create task message
-    const taskMessage = await this.createMessage(
+    const taskMessage = this.createMessage(
       node.parentId || 'system',
       node.agentId,
       `[Level ${node.depth}] ${task.description}`,
@@ -266,7 +250,7 @@ export class HierarchicalPattern extends BasePattern {
 
     if (node.childIds.length > 0) {
       for (const childId of node.childIds) {
-        const childNode = allNodes.find(n => n.agentId === childId);
+        const childNode = allNodes.find((n) => n.agentId === childId);
         if (!childNode) {
           continue;
         }
@@ -284,14 +268,10 @@ export class HierarchicalPattern extends BasePattern {
     }
 
     // Execute current agent (manager synthesizes child results)
-    const agentResult = await this.executeAgent(
-      node.agentId,
-      task.description,
-      childResults
-    );
+    const agentResult = await this.executeAgent(node.agentId, task.description, childResults);
 
     // Create result message
-    const resultMessage = await this.createMessage(
+    const resultMessage = this.createMessage(
       node.agentId,
       node.parentId || 'system',
       agentResult,
