@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to MUSUHI 2.0 will be documented in this file.
+All notable changes to MUSUHI-NG will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -14,6 +14,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation website enhancements
 - Community onboarding materials
 - Tutorial videos and examples
+
+---
+
+## [1.0.4] - 2025-11-16
+
+### Changed
+
+#### Branding Update
+
+- **CLI help message**: Changed "MUSUHI 2.0" to "MUSUHI-NG" in CLI description
+  - Aligns with project rebranding from MUSUHI 2.0 to MUSUHI-NG
+  - Visible in: `musuhi --help` and `musuhi help`
+
+---
+
+## [1.0.3] - 2025-11-16
+
+### Fixed
+
+#### Code Quality
+
+- **ESLint compliance**: Fixed TypeScript type safety warnings in init command
+  - Added proper type interface for command options
+  - Suppressed console.log warnings (legitimate for CLI output)
 
 ---
 

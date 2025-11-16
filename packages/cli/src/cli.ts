@@ -5,16 +5,17 @@
  */
 
 import { Command } from 'commander';
-import { version } from './version.js';
+
 import { initCommand } from './commands/init.js';
 import { validateCommand } from './commands/validate.js';
 import { workflowCommand } from './commands/workflow.js';
+import { version } from './version.js';
 
 const program = new Command();
 
 program
   .name('musuhi')
-  .description('MUSUHI 2.0 - Specification Driven Development CLI')
+  .description('MUSUHI-NG - Specification Driven Development CLI')
   .version(version);
 
 // Register commands
