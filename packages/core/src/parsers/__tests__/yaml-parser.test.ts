@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import { YAMLParser } from '../yaml-parser.js';
 
 describe('YAMLParser', () => {

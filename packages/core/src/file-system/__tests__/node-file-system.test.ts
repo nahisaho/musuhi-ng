@@ -2,9 +2,11 @@
  * Tests for NodeFileSystem
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { NodeFileSystem } from '../node-file-system.js';
 
 describe('NodeFileSystem', () => {

@@ -166,7 +166,9 @@ export type EventPayload =
 /**
  * Event listener function type
  */
-export type EventListener<T extends EventPayload = EventPayload> = (payload: T) => void | Promise<void>;
+export type EventListener<T extends EventPayload = EventPayload> = (
+  payload: T
+) => void | Promise<void>;
 
 /**
  * Event Bus for pub/sub communication
@@ -175,11 +177,13 @@ export type EventListener<T extends EventPayload = EventPayload> = (payload: T) 
 export class EventBus {
   private emitter: EventEmitter;
   private maxListeners: number;
+  private listenerMap: WeakMap<object, (payload: EventPayload) => void>;
 
   constructor(maxListeners = 100) {
     this.emitter = new EventEmitter();
     this.maxListeners = maxListeners;
     this.emitter.setMaxListeners(maxListeners);
+    this.listenerMap = new WeakMap();
   }
 
   /**
@@ -192,7 +196,11 @@ export class EventBus {
     eventType: EventType,
     listener: EventListener<T>
   ): () => void {
-    this.emitter.on(eventType, listener as EventListener);
+    const wrappedListener = (payload: T): void => {
+      void Promise.resolve(listener(payload));
+    };
+    this.listenerMap.set(listener as object, wrappedListener as (payload: EventPayload) => void);
+    this.emitter.on(eventType, wrappedListener);
     return () => this.off(eventType, listener);
   }
 
@@ -201,8 +209,14 @@ export class EventBus {
    * @param eventType - Event type to subscribe to
    * @param listener - Callback function to invoke when event is emitted
    */
-  once<T extends EventPayload = EventPayload>(eventType: EventType, listener: EventListener<T>): void {
-    this.emitter.once(eventType, listener as EventListener);
+  once<T extends EventPayload = EventPayload>(
+    eventType: EventType,
+    listener: EventListener<T>
+  ): void {
+    const wrappedListener = (payload: T): void => {
+      void Promise.resolve(listener(payload));
+    };
+    this.emitter.once(eventType, wrappedListener);
   }
 
   /**
@@ -210,8 +224,15 @@ export class EventBus {
    * @param eventType - Event type to unsubscribe from
    * @param listener - Callback function to remove
    */
-  off<T extends EventPayload = EventPayload>(eventType: EventType, listener: EventListener<T>): void {
-    this.emitter.off(eventType, listener as EventListener);
+  off<T extends EventPayload = EventPayload>(
+    eventType: EventType,
+    listener: EventListener<T>
+  ): void {
+    const wrappedListener = this.listenerMap.get(listener as object);
+    if (wrappedListener) {
+      this.emitter.off(eventType, wrappedListener);
+      this.listenerMap.delete(listener as object);
+    }
   }
 
   /**

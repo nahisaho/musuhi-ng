@@ -3,12 +3,14 @@
  */
 
 import { describe, it, expect } from 'vitest';
+
 import { EARSValidator } from '../ears-validator.js';
 
 describe('EARSValidator', () => {
   describe('validate - event-driven pattern', () => {
     it('should validate correct WHEN pattern', () => {
-      const statement = 'WHEN the user clicks the button, the system SHALL display a confirmation dialog.';
+      const statement =
+        'WHEN the user clicks the button, the system SHALL display a confirmation dialog.';
       const result = EARSValidator.validate(statement);
 
       expect(result.valid).toBe(true);
@@ -37,7 +39,8 @@ describe('EARSValidator', () => {
 
   describe('validate - unwanted-behavior pattern', () => {
     it('should validate correct IF-THEN pattern', () => {
-      const statement = 'IF an error occurs, THEN the system SHALL log the error and notify the user.';
+      const statement =
+        'IF an error occurs, THEN the system SHALL log the error and notify the user.';
       const result = EARSValidator.validate(statement);
 
       expect(result.valid).toBe(true);

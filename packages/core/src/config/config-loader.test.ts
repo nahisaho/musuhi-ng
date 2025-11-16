@@ -3,8 +3,13 @@
  * @module @musuhi-ng/core/config
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-template-expressions */
+
+import { promises as fs } from 'fs';
 import * as path from 'node:path';
+
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import type { PlatformType } from '../types/index.js';
 
 // Mock fs module
@@ -32,7 +37,6 @@ vi.mock('../parsers/yaml-parser.js', () => {
 });
 
 import { ConfigLoader, DEFAULT_CONFIG } from './config-loader.js';
-import { promises as fs } from 'fs';
 
 describe('ConfigLoader', () => {
   let configLoader: ConfigLoader;
@@ -56,7 +60,8 @@ describe('ConfigLoader', () => {
           const [key, value] = trimmed.split(':').map((s: string) => s.trim());
           if (currentKey && key && value !== undefined) {
             if (!result[currentKey]) result[currentKey] = {};
-            result[currentKey][key] = value === 'true' ? true : value === 'false' ? false : value.replace(/"/g, '');
+            result[currentKey][key] =
+              value === 'true' ? true : value === 'false' ? false : value.replace(/"/g, '');
           }
         } else {
           // Top-level property
@@ -193,10 +198,7 @@ projectName: "My Project"
 
       await configLoader.save(configToSave);
 
-      expect(fs.mkdir).toHaveBeenCalledWith(
-        path.dirname(testConfigPath),
-        { recursive: true }
-      );
+      expect(fs.mkdir).toHaveBeenCalledWith(path.dirname(testConfigPath), { recursive: true });
       expect(fs.writeFile).toHaveBeenCalled();
     });
 

@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import { MarkdownParser } from '../markdown-parser.js';
 
 describe('MarkdownParser', () => {
@@ -13,16 +14,16 @@ describe('MarkdownParser', () => {
   });
 
   describe('parse', () => {
-    it('should parse simple markdown', async () => {
+    it('should parse simple markdown', () => {
       const markdown = '# Hello World\n\nThis is a test.';
-      const result = await parser.parse(markdown);
+      const result = parser.parse(markdown);
 
       expect(result.title).toBe('Hello World');
       expect(result.ast).toBeDefined();
       expect(result.ast.type).toBe('root');
     });
 
-    it('should extract frontmatter', async () => {
+    it('should extract frontmatter', () => {
       const markdown = `---
 title: Test Document
 version: 1.0
@@ -30,14 +31,14 @@ version: 1.0
 
 # Content`;
 
-      const result = await parser.parse(markdown, { parseFrontmatter: true });
+      const result = parser.parse(markdown, { parseFrontmatter: true });
 
       expect(result.frontmatter).toBeDefined();
       expect(result.frontmatter?.title).toBe('Test Document');
       expect(result.frontmatter?.version).toBe(1.0);
     });
 
-    it('should extract sections', async () => {
+    it('should extract sections', () => {
       const markdown = `# Title
 
 ## Section 1
@@ -52,7 +53,7 @@ Content 2
 
 Nested content`;
 
-      const result = await parser.parse(markdown, { extractSections: true });
+      const result = parser.parse(markdown, { extractSections: true });
 
       expect(result.sections.length).toBeGreaterThanOrEqual(1);
       // Check that sections were extracted
@@ -130,7 +131,7 @@ The system SHALL log all transactions.
   });
 
   describe('findSection', () => {
-    it('should find section by title', async () => {
+    it('should find section by title', () => {
       const markdown = `# Main
 
 ## Section A
@@ -139,7 +140,7 @@ The system SHALL log all transactions.
 
 ### Nested`;
 
-      const result = await parser.parse(markdown);
+      const result = parser.parse(markdown);
       const found = parser.findSection(result.sections, 'Section B');
 
       expect(found).toBeDefined();
@@ -147,26 +148,26 @@ The system SHALL log all transactions.
       expect(found?.children).toHaveLength(1);
     });
 
-    it('should find nested section', async () => {
+    it('should find nested section', () => {
       const markdown = `# Main
 
 ## Section A
 
 ### Nested Section`;
 
-      const result = await parser.parse(markdown);
+      const result = parser.parse(markdown);
       const found = parser.findSection(result.sections, 'Nested Section');
 
       expect(found).toBeDefined();
       expect(found?.title).toBe('Nested Section');
     });
 
-    it('should return undefined for non-existent section', async () => {
+    it('should return undefined for non-existent section', () => {
       const markdown = `# Main
 
 ## Section A`;
 
-      const result = await parser.parse(markdown);
+      const result = parser.parse(markdown);
       const found = parser.findSection(result.sections, 'Non-existent');
 
       expect(found).toBeUndefined();
@@ -174,7 +175,7 @@ The system SHALL log all transactions.
   });
 
   describe('getAllHeadings', () => {
-    it('should get all headings from sections', async () => {
+    it('should get all headings from sections', () => {
       const markdown = `# Main
 
 ## Section 1
@@ -183,7 +184,7 @@ The system SHALL log all transactions.
 
 ## Section 2`;
 
-      const result = await parser.parse(markdown);
+      const result = parser.parse(markdown);
       const headings = parser.getAllHeadings(result.sections);
 
       expect(headings.length).toBeGreaterThanOrEqual(3);
@@ -194,11 +195,11 @@ The system SHALL log all transactions.
   });
 
   describe('stringify', () => {
-    it('should stringify AST back to markdown', async () => {
+    it('should stringify AST back to markdown', () => {
       const markdown = '# Title\n\nParagraph text.';
 
-      const parsed = await parser.parse(markdown);
-      const stringified = await parser.stringify(parsed.ast);
+      const parsed = parser.parse(markdown);
+      const stringified = parser.stringify(parsed.ast);
 
       expect(stringified).toContain('# Title');
       expect(stringified).toContain('Paragraph text.');

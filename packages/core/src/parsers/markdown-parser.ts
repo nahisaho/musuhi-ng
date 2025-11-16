@@ -85,8 +85,8 @@ export class MarkdownParser {
   /**
    * Parse markdown string to AST
    */
-  async parse(markdown: string, options?: MarkdownParserOptions): Promise<ParsedMarkdown> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parse(markdown: string, options?: MarkdownParserOptions): ParsedMarkdown {
+    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
     let processor: any = unified().use(remarkParse);
 
     if (options?.parseFrontmatter !== false) {
@@ -98,6 +98,7 @@ export class MarkdownParser {
     }
 
     const ast = processor.parse(markdown) as Root;
+    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 
     const result: ParsedMarkdown = {
       ast,
@@ -123,12 +124,13 @@ export class MarkdownParser {
   /**
    * Stringify AST to markdown
    */
-  async stringify(ast: Root): Promise<string> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  stringify(ast: Root): string {
+    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
     const processor: any = unified().use(remarkStringify).use(remarkGfm);
 
     const markdown = processor.stringify(ast);
     return markdown;
+    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
   }
 
   /**
@@ -243,13 +245,11 @@ export class MarkdownParser {
    */
   private extractTextFromNode(node: Content): string {
     if ('children' in node) {
-      return node.children
-        .map((child) => this.extractTextFromNode(child as Content))
-        .join('');
+      return node.children.map((child) => this.extractTextFromNode(child as Content)).join('');
     }
 
     if (node.type === 'text') {
-      return (node).value;
+      return node.value;
     }
 
     return '';

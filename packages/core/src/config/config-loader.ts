@@ -170,7 +170,7 @@ export class ConfigLoader {
       ];
       if (!validPlatforms.includes(cfg.platform as PlatformType)) {
         throw new ConfigValidationError(
-          `Invalid platform: ${cfg.platform}. Must be one of: ${validPlatforms.join(', ')}`
+          `Invalid platform: ${String(cfg.platform)}. Must be one of: ${validPlatforms.join(', ')}`
         );
       }
     }

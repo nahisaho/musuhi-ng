@@ -7,7 +7,7 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
 
-import { MarkdownParser } from '../parsers/markdown-parser.js';
+import { MarkdownParser, type ParsedMarkdown } from '../parsers/markdown-parser.js';
 
 /**
  * Steering context files
@@ -30,7 +30,10 @@ export interface SteeringContext {
  * Context loading error
  */
 export class ContextLoadError extends Error {
-  constructor(message: string, public readonly filePath?: string) {
+  constructor(
+    message: string,
+    public readonly filePath?: string
+  ) {
     super(message);
     this.name = 'ContextLoadError';
   }
@@ -156,9 +159,9 @@ export class ContextManager {
    * Parse markdown file and extract sections
    * @param fileName - File name
    * @param forceReload - Force reload even if cached
-   * @returns Parsed markdown AST
+   * @returns Parsed markdown data with AST and metadata
    */
-  async parseMarkdown(fileName: string, forceReload = false) {
+  async parseMarkdown(fileName: string, forceReload = false): Promise<ParsedMarkdown | null> {
     const content = await this.load(fileName, forceReload);
     if (!content) {
       return null;
@@ -295,7 +298,7 @@ export class ContextManager {
       const filePath = path.join(this.steeringDir, file);
       const abortController = new AbortController();
 
-      (async () => {
+      void (async (): Promise<void> => {
         try {
           const watcher = fs.watch(filePath, { signal: abortController.signal });
           for await (const event of watcher) {

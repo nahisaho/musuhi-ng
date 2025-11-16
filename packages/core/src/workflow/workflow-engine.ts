@@ -72,7 +72,7 @@ export class WorkflowEngine {
   /**
    * Start a stage
    */
-  async startStage(stage: WorkflowStage): Promise<void> {
+  startStage(stage: WorkflowStage): void {
     const stageConfig = this.getStage(stage);
     if (!stageConfig) {
       throw new Error(`Stage ${stage} not found`);
