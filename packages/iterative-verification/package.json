@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/iterative-verification",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Task-by-task execution with human review checkpoints for early error detection",
   "type": "module",
   "main": "./dist/index.js",
@@ -31,7 +31,7 @@
   "author": "MUSUHI Contributors",
   "license": "MIT",
   "dependencies": {
-    "@musuhi-ng/core": "workspace:*"
+    "@musuhi-ng/core": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

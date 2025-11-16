@@ -1,4 +1,4 @@
-# MUSUHI 2.0 - Specification Driven Development Framework
+# MUSUHI-NG - Specification Driven Development Framework
 
 [![npm version](https://badge.fury.io/js/@musuhi-ng%2Fcore.svg)](https://www.npmjs.com/package/@musuhi-ng/core)
 [![GitHub Actions](https://github.com/nahisaho/musuhi-ng/workflows/CI/badge.svg)](https://github.com/nahisaho/musuhi-ng/actions)
@@ -8,7 +8,7 @@ A next-generation framework for AI-assisted software development using Specifica
 
 ## Overview
 
-MUSUHI 2.0 enables teams to develop software through a structured, specification-driven approach that integrates seamlessly with 8 major AI coding assistants. The framework enforces constitutional governance, automates workflow management, and provides real-time verification of requirements traceability.
+MUSUHI-NG enables teams to develop software through a structured, specification-driven approach that integrates seamlessly with 8 major AI coding assistants. The framework enforces constitutional governance, automates workflow management, and provides real-time verification of requirements traceability.
 
 ## Key Features
 
@@ -23,7 +23,7 @@ MUSUHI 2.0 enables teams to develop software through a structured, specification
 
 ## Architecture
 
-MUSUHI 2.0 uses a monorepo architecture with the following packages:
+MUSUHI-NG uses a monorepo architecture with the following packages:
 
 ```
 packages/

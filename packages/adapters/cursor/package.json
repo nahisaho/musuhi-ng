@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/adapter-cursor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cursor adapter for MUSUHI 2.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -34,7 +34,7 @@
   "author": "MUSUHI Contributors",
   "license": "MIT",
   "dependencies": {
-    "@musuhi-ng/core": "workspace:*"
+    "@musuhi-ng/core": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

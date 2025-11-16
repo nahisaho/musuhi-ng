@@ -17,6 +17,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.1] - 2025-11-16
+
+### Fixed
+
+#### Critical Dependency Issue
+
+- **workspace:\* dependencies**: Fixed all packages using `workspace:*` dependencies that prevented installation from npm registry
+  - Replaced all `workspace:*` references with `^1.0.0` version ranges
+  - Affected 21 packages with cross-package dependencies
+  - Users can now properly install packages from npm: `npm install @musuhi-ng/cli`
+
+### Technical Details
+
+**Problem**: Version 1.0.0 packages were published with `workspace:*` dependencies, which only work in monorepo environments. End users installing from npm would encounter errors like:
+
+```
+ERR_PNPM_WORKSPACE_PKG_NOT_FOUND  "@musuhi-ng/core@workspace:*" is in the dependencies but no package named "@musuhi-ng/core" is present in the workspace
+```
+
+**Solution**:
+
+- Created automated script (`fix-workspace-deps.js`) to replace all workspace references
+- Bumped version to 1.0.1 across all 21 packages
+- Rebuilt and republished all packages with corrected dependencies
+- All packages now installable from npm registry
+
+**Affected Packages**: All 21 packages (13 core + 8 adapters)
+
+---
+
 ## [1.0.0] - 2025-11-16
 
 ### Overview

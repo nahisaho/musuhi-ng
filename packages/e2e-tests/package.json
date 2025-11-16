@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/e2e-tests",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "End-to-End tests for MUSUHI 2.0",
   "type": "module",
   "main": "dist/index.js",
@@ -16,15 +16,15 @@
     "lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
-    "@musuhi-ng/core": "workspace:*",
-    "@musuhi-ng/constitutional-governance": "workspace:*",
-    "@musuhi-ng/change-workflow": "workspace:*",
-    "@musuhi-ng/multi-agent-orchestrator": "workspace:*",
-    "@musuhi-ng/parallel-executor": "workspace:*",
-    "@musuhi-ng/gap-analyzer": "workspace:*",
-    "@musuhi-ng/dashboard": "workspace:*",
-    "@musuhi-ng/iterative-verification": "workspace:*",
-    "@musuhi-ng/platform-adapters": "workspace:*"
+    "@musuhi-ng/core": "^1.0.0",
+    "@musuhi-ng/constitutional-governance": "^1.0.0",
+    "@musuhi-ng/change-workflow": "^1.0.0",
+    "@musuhi-ng/multi-agent-orchestrator": "^1.0.0",
+    "@musuhi-ng/parallel-executor": "^1.0.0",
+    "@musuhi-ng/gap-analyzer": "^1.0.0",
+    "@musuhi-ng/dashboard": "^1.0.0",
+    "@musuhi-ng/iterative-verification": "^1.0.0",
+    "@musuhi-ng/platform-adapters": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
