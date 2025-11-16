@@ -6,6 +6,7 @@
 
 import { promises as fs } from 'fs';
 import * as path from 'path';
+
 import type { ChangeDelta, DeltaOperation } from './types.js';
 
 /**
@@ -50,10 +51,7 @@ export class DeltaManager {
   /**
    * Detect changes between two spec directories
    */
-  async detectChanges(
-    baseSpecsDir: string,
-    changedSpecsDir: string
-  ): Promise<ChangeDelta> {
+  async detectChanges(baseSpecsDir: string, changedSpecsDir: string): Promise<ChangeDelta> {
     const operations: DeltaOperation[] = [];
     const affectedSpecs: Set<string> = new Set();
 
@@ -157,10 +155,7 @@ export class DeltaManager {
   /**
    * Apply delta to a target directory
    */
-  async applyDelta(
-    delta: ChangeDelta,
-    targetDir: string
-  ): Promise<DeltaApplicationResult> {
+  async applyDelta(delta: ChangeDelta, targetDir: string): Promise<DeltaApplicationResult> {
     const errors: string[] = [];
     const warnings: string[] = [];
     let appliedOperations = 0;
@@ -192,7 +187,7 @@ export class DeltaManager {
         }
       } catch (error) {
         errors.push(
-          `Failed to apply ${operation.type} for ${operation.specPath}: ${error}`
+          `Failed to apply ${operation.type} for ${operation.specPath}: ${String(error)}`
         );
       }
     }

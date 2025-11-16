@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import { ProposalGenerator } from '../proposal-generator.js';
 import type { ProposalSections } from '../proposal-generator.js';
 import type { ChangeProposal } from '../types.js';

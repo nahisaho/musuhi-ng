@@ -3,11 +3,13 @@
  * @module @musuhi-ng/change-workflow
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { DeltaManager } from '../delta-manager.js';
-import type { ChangeDelta, DeltaOperation } from '../types.js';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
+import { DeltaManager } from '../delta-manager.js';
+import type { ChangeDelta, DeltaOperation } from '../types.js';
 
 describe('DeltaManager', () => {
   let manager: DeltaManager;
@@ -142,16 +144,12 @@ describe('DeltaManager', () => {
   describe('mergeDeltas', () => {
     it('should merge multiple deltas', () => {
       const delta1: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'file1.md', content: 'Content 1' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'file1.md', content: 'Content 1' }],
         affectedSpecs: ['file1.md'],
       };
 
       const delta2: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'file2.md', content: 'Content 2' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'file2.md', content: 'Content 2' }],
         affectedSpecs: ['file2.md'],
       };
 
@@ -164,16 +162,12 @@ describe('DeltaManager', () => {
 
     it('should handle duplicate spec paths (keep last)', () => {
       const delta1: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'file.md', content: 'First' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'file.md', content: 'First' }],
         affectedSpecs: ['file.md'],
       };
 
       const delta2: ChangeDelta = {
-        operations: [
-          { type: 'MODIFIED', specPath: 'file.md', content: 'Second' },
-        ],
+        operations: [{ type: 'MODIFIED', specPath: 'file.md', content: 'Second' }],
         affectedSpecs: ['file.md'],
       };
 
@@ -191,9 +185,7 @@ describe('DeltaManager', () => {
       await fs.mkdir(targetDir, { recursive: true });
 
       const delta: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'new.md', content: 'New content' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'new.md', content: 'New content' }],
         affectedSpecs: ['new.md'],
       };
 
@@ -213,9 +205,7 @@ describe('DeltaManager', () => {
       await fs.writeFile(path.join(targetDir, 'file.md'), 'Original', 'utf-8');
 
       const delta: ChangeDelta = {
-        operations: [
-          { type: 'MODIFIED', specPath: 'file.md', content: 'Modified' },
-        ],
+        operations: [{ type: 'MODIFIED', specPath: 'file.md', content: 'Modified' }],
         affectedSpecs: ['file.md'],
       };
 
@@ -234,9 +224,7 @@ describe('DeltaManager', () => {
       await fs.writeFile(path.join(targetDir, 'file.md'), 'Content', 'utf-8');
 
       const delta: ChangeDelta = {
-        operations: [
-          { type: 'REMOVED', specPath: 'file.md', content: '' },
-        ],
+        operations: [{ type: 'REMOVED', specPath: 'file.md', content: '' }],
         affectedSpecs: ['file.md'],
       };
 
@@ -253,9 +241,7 @@ describe('DeltaManager', () => {
       await fs.mkdir(targetDir, { recursive: true });
 
       const delta: ChangeDelta = {
-        operations: [
-          { type: 'REMOVED', specPath: 'nonexistent.md', content: '' },
-        ],
+        operations: [{ type: 'REMOVED', specPath: 'nonexistent.md', content: '' }],
         affectedSpecs: ['nonexistent.md'],
       };
 
@@ -275,9 +261,7 @@ describe('DeltaManager', () => {
       };
 
       const delta2: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'new.md', content: 'New' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'new.md', content: 'New' }],
         affectedSpecs: ['new.md'],
       };
 
@@ -291,16 +275,12 @@ describe('DeltaManager', () => {
 
     it('should identify modified files', () => {
       const delta1: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'file.md', content: 'Original' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'file.md', content: 'Original' }],
         affectedSpecs: ['file.md'],
       };
 
       const delta2: ChangeDelta = {
-        operations: [
-          { type: 'MODIFIED', specPath: 'file.md', content: 'Modified' },
-        ],
+        operations: [{ type: 'MODIFIED', specPath: 'file.md', content: 'Modified' }],
         affectedSpecs: ['file.md'],
       };
 
@@ -314,9 +294,7 @@ describe('DeltaManager', () => {
   describe('serialize/deserialize', () => {
     it('should serialize and deserialize delta', () => {
       const delta: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'file.md', content: 'Content' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'file.md', content: 'Content' }],
         affectedSpecs: ['file.md'],
       };
 
@@ -361,9 +339,7 @@ describe('DeltaManager', () => {
   describe('validateDelta', () => {
     it('should validate correct delta', () => {
       const delta: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'file.md', content: 'Content' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'file.md', content: 'Content' }],
         affectedSpecs: ['file.md'],
       };
 
@@ -375,9 +351,7 @@ describe('DeltaManager', () => {
 
     it('should detect missing content for non-REMOVED operations', () => {
       const delta: ChangeDelta = {
-        operations: [
-          { type: 'ADDED', specPath: 'file.md', content: '' },
-        ],
+        operations: [{ type: 'ADDED', specPath: 'file.md', content: '' }],
         affectedSpecs: ['file.md'],
       };
 
@@ -390,6 +364,7 @@ describe('DeltaManager', () => {
     it('should detect invalid operation type', () => {
       const delta: ChangeDelta = {
         operations: [
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
           { type: 'INVALID' as any, specPath: 'file.md', content: 'Content' },
         ],
         affectedSpecs: ['file.md'],

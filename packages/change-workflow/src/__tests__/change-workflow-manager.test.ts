@@ -3,11 +3,13 @@
  * @module @musuhi-ng/change-workflow
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { ChangeWorkflowManager } from '../change-workflow-manager.js';
-import { NodeFileSystem } from '@musuhi-ng/core';
-import * as path from 'path';
 import { promises as fs } from 'fs';
+import * as path from 'path';
+
+import { NodeFileSystem } from '@musuhi-ng/core';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
+import { ChangeWorkflowManager } from '../change-workflow-manager.js';
 
 describe('ChangeWorkflowManager', () => {
   let manager: ChangeWorkflowManager;
@@ -37,9 +39,18 @@ describe('ChangeWorkflowManager', () => {
       await manager.initialize();
 
       // Use fs.access to check directory existence
-      const specsExists = await fs.access(manager.getSpecsPath()).then(() => true).catch(() => false);
-      const changesExists = await fs.access(manager.getChangesPath()).then(() => true).catch(() => false);
-      const archiveExists = await fs.access(manager.getArchivePath()).then(() => true).catch(() => false);
+      const specsExists = await fs
+        .access(manager.getSpecsPath())
+        .then(() => true)
+        .catch(() => false);
+      const changesExists = await fs
+        .access(manager.getChangesPath())
+        .then(() => true)
+        .catch(() => false);
+      const archiveExists = await fs
+        .access(manager.getArchivePath())
+        .then(() => true)
+        .catch(() => false);
 
       expect(specsExists).toBe(true);
       expect(changesExists).toBe(true);
@@ -52,7 +63,10 @@ describe('ChangeWorkflowManager', () => {
       await manager.initialize();
 
       // Use fs.access to check directory existence
-      const specsExists = await fs.access(manager.getSpecsPath()).then(() => true).catch(() => false);
+      const specsExists = await fs
+        .access(manager.getSpecsPath())
+        .then(() => true)
+        .catch(() => false);
       expect(specsExists).toBe(true);
     });
   });
@@ -88,8 +102,14 @@ describe('ChangeWorkflowManager', () => {
       expect(workspace.specsDir).toContain('specs');
 
       // Verify directories exist using fs.access
-      const rootExists = await fs.access(workspace.root).then(() => true).catch(() => false);
-      const specsExists = await fs.access(workspace.specsDir).then(() => true).catch(() => false);
+      const rootExists = await fs
+        .access(workspace.root)
+        .then(() => true)
+        .catch(() => false);
+      const specsExists = await fs
+        .access(workspace.specsDir)
+        .then(() => true)
+        .catch(() => false);
 
       expect(rootExists).toBe(true);
       expect(specsExists).toBe(true);

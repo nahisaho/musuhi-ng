@@ -4,9 +4,11 @@
  * @module @musuhi-ng/change-workflow
  */
 
-import type { IFileSystem } from '@musuhi-ng/core';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+
+import type { IFileSystem } from '@musuhi-ng/core';
+
 import type { ChangeWorkspace } from './types.js';
 
 /**
@@ -62,7 +64,7 @@ export class ChangeWorkflowManager {
     try {
       await this.initialize();
     } catch (error) {
-      errors.push(`Cannot create workflow directories: ${error}`);
+      errors.push(`Cannot create workflow directories: ${String(error)}`);
     }
 
     return {
