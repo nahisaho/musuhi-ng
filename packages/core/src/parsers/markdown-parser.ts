@@ -5,12 +5,12 @@
  * @module @musuhi-ng/core/parsers
  */
 
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkStringify from 'remark-stringify';
+import type { Root, Content, Heading, Text } from 'mdast';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
-import type { Root, Content, Heading, Text } from 'mdast';
+import remarkParse from 'remark-parse';
+import remarkStringify from 'remark-stringify';
+import { unified } from 'unified';
 
 /**
  * Frontmatter data (YAML)
@@ -198,7 +198,7 @@ export class MarkdownParser {
 
     for (const node of ast.children) {
       if (node.type === 'heading') {
-        const heading = node as Heading;
+        const heading = node;
         const title = this.extractTextFromNode(heading);
         const level = heading.depth;
 
@@ -249,7 +249,7 @@ export class MarkdownParser {
     }
 
     if (node.type === 'text') {
-      return (node as Text).value;
+      return (node).value;
     }
 
     return '';

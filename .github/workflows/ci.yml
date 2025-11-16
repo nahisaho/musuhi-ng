@@ -254,7 +254,7 @@ jobs:
           path: packages
 
       - name: Run E2E tests
-        run: pnpm --filter @musuhi/e2e-tests test
+        run: pnpm --filter @musuhi-ng/e2e-tests test
 
   # Job 6: All Checks Passed
   all-checks-passed:

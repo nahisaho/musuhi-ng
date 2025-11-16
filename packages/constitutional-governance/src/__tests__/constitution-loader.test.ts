@@ -8,11 +8,6 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { ConstitutionLoader } from '../constitution-loader.js';
 import { NodeFileSystem, Article } from '@musuhi-ng/core';
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-// Get current file directory
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 describe('ConstitutionLoader Integration', () => {
   let fsManager: NodeFileSystem;
@@ -20,8 +15,8 @@ describe('ConstitutionLoader Integration', () => {
   let constitutionPath: string;
 
   beforeEach(() => {
-    // Use real constitution file from steering/
-    constitutionPath = '/home/nahisaho/GitHub/musuhi2/steering/constitution.md';
+    // Use real constitution file from steering/ - relative to project root
+    constitutionPath = path.resolve(process.cwd(), 'steering/constitution.md');
     fsManager = new NodeFileSystem();
     loader = new ConstitutionLoader(fsManager, constitutionPath);
   });

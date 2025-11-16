@@ -8,6 +8,7 @@ import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { PlatformType, IPlatformAdapter } from '../types/index.js';
+import { ConfigLoader, type MUSUHIConfig } from '@musuhi-ng/core';
 import {
   ClaudeCodeAdapter,
   CursorAdapter,
@@ -47,6 +48,7 @@ export class AdapterFactory {
     // Priority 1: Environment variables
     const envPlatform = this.detectFromEnvironment();
     if (envPlatform) {
+      // eslint-disable-next-line no-console
       console.log(`[AdapterFactory] Detected platform from env: ${envPlatform}`);
       return envPlatform;
     }
@@ -54,6 +56,7 @@ export class AdapterFactory {
     // Priority 2: Installed extensions/plugins
     const extensionPlatform = this.detectFromExtensions(projectRoot);
     if (extensionPlatform) {
+      // eslint-disable-next-line no-console
       console.log(
         `[AdapterFactory] Detected platform from extensions: ${extensionPlatform}`
       );
@@ -63,6 +66,7 @@ export class AdapterFactory {
     // Priority 3: CLI availability
     const cliPlatform = this.detectFromCLI();
     if (cliPlatform) {
+      // eslint-disable-next-line no-console
       console.log(`[AdapterFactory] Detected platform from CLI: ${cliPlatform}`);
       return cliPlatform;
     }
@@ -70,6 +74,7 @@ export class AdapterFactory {
     // Priority 4: Config file
     const configPlatform = this.detectFromConfig(projectRoot);
     if (configPlatform) {
+      // eslint-disable-next-line no-console
       console.log(
         `[AdapterFactory] Detected platform from config: ${configPlatform}`
       );
@@ -77,6 +82,66 @@ export class AdapterFactory {
     }
 
     // Priority 5: Default fallback
+    // eslint-disable-next-line no-console
+    console.log(`[AdapterFactory] Using default platform: claude-code`);
+    return 'claude-code';
+  }
+
+  /**
+   * AC-8.8: Auto-detect the current AI platform (async version)
+   *
+   * This async version properly loads config from .musuhi/config.yaml
+   * For synchronous detection, use detectPlatform()
+   *
+   * Detection priority:
+   * 1. Environment variables (highest priority)
+   * 2. Installed IDE extensions/plugins
+   * 3. CLI availability (which command)
+   * 4. Config file (.musuhi/config.yaml) - fully loaded
+   * 5. Default to claude-code (fallback)
+   *
+   * @param projectRoot - Project root directory
+   * @returns Detected platform type
+   */
+  static async detectPlatformAsync(projectRoot: string = process.cwd()): Promise<PlatformType> {
+    // Priority 1: Environment variables
+    const envPlatform = this.detectFromEnvironment();
+    if (envPlatform) {
+      // eslint-disable-next-line no-console
+      console.log(`[AdapterFactory] Detected platform from env: ${envPlatform}`);
+      return envPlatform;
+    }
+
+    // Priority 2: Installed extensions/plugins
+    const extensionPlatform = this.detectFromExtensions(projectRoot);
+    if (extensionPlatform) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `[AdapterFactory] Detected platform from extensions: ${extensionPlatform}`
+      );
+      return extensionPlatform;
+    }
+
+    // Priority 3: CLI availability
+    const cliPlatform = this.detectFromCLI();
+    if (cliPlatform) {
+      // eslint-disable-next-line no-console
+      console.log(`[AdapterFactory] Detected platform from CLI: ${cliPlatform}`);
+      return cliPlatform;
+    }
+
+    // Priority 4: Config file (async load)
+    const configPlatform = await this.loadConfigPlatformAsync(projectRoot);
+    if (configPlatform) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `[AdapterFactory] Detected platform from config: ${configPlatform}`
+      );
+      return configPlatform;
+    }
+
+    // Priority 5: Default fallback
+    // eslint-disable-next-line no-console
     console.log(`[AdapterFactory] Using default platform: claude-code`);
     return 'claude-code';
   }
@@ -204,10 +269,37 @@ export class AdapterFactory {
     }
 
     try {
-      // TODO: Use ConfigLoader from @musuhi-ng/core when available
-      // For now, return null (config loading not implemented)
-      return null;
+      // Note: ConfigLoader.load() is async, so we can't use it in this sync method
+      // For better performance, use detectPlatformAsync() which fully loads config
+      // For now, use the static detectPlatform() method as fallback
+      return ConfigLoader.detectPlatform();
     } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Async version: Load platform from config file
+   * @param projectRoot - Project root directory
+   * @returns Platform from config or null
+   */
+  private static async loadConfigPlatformAsync(projectRoot: string): Promise<PlatformType | null> {
+    const configPath = join(projectRoot, '.musuhi', 'config.yaml');
+
+    if (!existsSync(configPath)) {
+      return null;
+    }
+
+    try {
+      // Use ConfigLoader from @musuhi-ng/core
+      const loader = new ConfigLoader(projectRoot);
+      const config: MUSUHIConfig = await loader.load();
+
+      // Return platform from config if available
+      return config.platform ?? null;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('[AdapterFactory] Failed to load config:', error instanceof Error ? error.message : String(error));
       return null;
     }
   }

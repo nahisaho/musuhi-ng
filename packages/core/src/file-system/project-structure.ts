@@ -5,6 +5,7 @@
  */
 
 import * as path from 'path';
+
 import type { IFileSystem, ProjectStructure } from '../types/file-system.js';
 
 /**

@@ -9,6 +9,7 @@ import { ConstitutionLoader } from '../constitution-loader.js';
 import { PhaseGateValidator } from '../phase-gate.js';
 import { NodeFileSystem, Article } from '@musuhi-ng/core';
 import type { ValidationContext, ArticleConfig } from '../types.js';
+import path from 'path';
 
 describe('PhaseGateValidator Integration', () => {
   let fsManager: NodeFileSystem;
@@ -18,8 +19,8 @@ describe('PhaseGateValidator Integration', () => {
   let constitutionPath: string;
 
   beforeEach(async () => {
-    // Load real constitution
-    constitutionPath = '/home/nahisaho/GitHub/musuhi2/steering/constitution.md';
+    // Load real constitution - use relative path from project root
+    constitutionPath = path.resolve(process.cwd(), 'steering/constitution.md');
     fsManager = new NodeFileSystem();
     loader = new ConstitutionLoader(fsManager, constitutionPath);
 
@@ -28,12 +29,12 @@ describe('PhaseGateValidator Integration', () => {
     validator = new PhaseGateValidator(articles);
   });
 
-  it('should initialize with 9 articles from constitution', async () => {
+  it('should initialize with 9 articles from constitution', () => {
     const loadedArticles = validator.getArticles();
     expect(loadedArticles).toHaveLength(9);
   });
 
-  it('should initialize validation rules for all articles', async () => {
+  it('should initialize validation rules for all articles', () => {
     const loadedArticles = validator.getArticles();
 
     // Each article should have validation rules assigned

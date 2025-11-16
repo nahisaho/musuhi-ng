@@ -9,6 +9,7 @@ import { ArticleParser } from '../article-parser.js';
 import { ConstitutionLoader } from '../constitution-loader.js';
 import { NodeFileSystem, Article } from '@musuhi-ng/core';
 import type { ArticleConfig } from '../types.js';
+import path from 'path';
 
 describe('ArticleParser', () => {
   let fsManager: NodeFileSystem;
@@ -17,8 +18,8 @@ describe('ArticleParser', () => {
   let constitutionPath: string;
 
   beforeEach(async () => {
-    // Load real constitution
-    constitutionPath = '/home/nahisaho/GitHub/musuhi2/steering/constitution.md';
+    // Load real constitution - use relative path from project root
+    constitutionPath = path.resolve(process.cwd(), 'steering/constitution.md');
     fsManager = new NodeFileSystem();
     loader = new ConstitutionLoader(fsManager, constitutionPath);
     articles = await loader.load();
@@ -130,7 +131,8 @@ describe('ArticleParser', () => {
     });
 
     it('should return undefined for non-existent article', () => {
-      const article = ArticleParser.getArticle(articles, 99 as Article);
+      // Using a non-standard article number for testing
+      const article = ArticleParser.getArticle(articles, 99);
 
       expect(article).toBeUndefined();
     });

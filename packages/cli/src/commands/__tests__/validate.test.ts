@@ -10,7 +10,7 @@ import { ConstitutionLoader } from '@musuhi-ng/constitutional-governance';
 import { NodeFileSystem } from '@musuhi-ng/core';
 
 describe('Validate Command Integration', () => {
-  const projectRoot = '/home/nahisaho/GitHub/musuhi2';
+  const projectRoot = process.cwd();
   const constitutionPath = path.join(projectRoot, 'steering', 'constitution.md');
 
   it('should load constitution successfully', async () => {

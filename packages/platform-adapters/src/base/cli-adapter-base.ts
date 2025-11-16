@@ -10,6 +10,9 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { BasePlatformAdapter } from './base-adapter.js';
 import type { Delta, PhaseGate, GateResult } from '../types/index.js';
+import { ConstitutionLoader, PhaseGateValidator } from '@musuhi-ng/constitutional-governance';
+import { NodeFileSystem } from '@musuhi-ng/core';
+import type { ValidationContext } from '@musuhi-ng/constitutional-governance';
 
 const execAsync = promisify(exec);
 
@@ -106,19 +109,78 @@ export abstract class CLIAdapterBase extends BasePlatformAdapter {
    * @returns Promise resolving to gate result
    */
   async enforcePhaseGate(gate: PhaseGate): Promise<GateResult> {
-    // Default implementation: Always approve (basic validation only)
-    // Real implementation would call constitutional governance package
+    // eslint-disable-next-line no-console
     console.log(
       `[${this.platform}] Phase -1 Gate: Validating Articles [${gate.articles.join(', ')}]`
     );
 
-    // TODO: Integrate with @musuhi-ng/constitutional-governance
-    // For now, return approval with logged message
-    return {
-      status: 'approved',
-      message: `Phase -1 Gate passed for Articles [${gate.articles.join(', ')}]`,
-      violations: [],
-      suggestions: [],
-    };
+    try {
+      // Load constitution from steering/constitution.md
+      const constitutionPath = join(this.projectRoot, 'steering', 'constitution.md');
+      const fsManager = new NodeFileSystem();
+      const loader = new ConstitutionLoader(fsManager, constitutionPath);
+      const articles = await loader.load();
+
+      // Create Phase Gate Validator
+      const validator = new PhaseGateValidator(articles);
+
+      // Create validation context from gate data
+      const context: ValidationContext = {
+        type: 'design', // Default to design context
+        files: gate.context.change ? [
+          {
+            path: gate.context.change.path,
+            content: gate.context.change.content ?? '',
+            operation: gate.context.change.type,
+          }
+        ] : [],
+        changes: gate.context.change ? [gate.context.change] : [],
+        metadata: {
+          timestamp: new Date(),
+          author: 'platform-adapter',
+          ...gate.context.metadata,
+        },
+      };
+
+      // Validate using PhaseGateValidator
+      const validationResult = await validator.validate(context, gate.articles);
+
+      // Convert PhaseMinusOneGate result to GateResult format
+      const hasFailures = validationResult.validations.some(v => v.status === 'fail');
+      const hasWarnings = validationResult.validations.some(v => v.status === 'warning');
+
+      const violations = validationResult.validations
+        .filter(v => v.status === 'fail')
+        .flatMap(v => v.errors.map(error => ({
+          article: v.article,
+          reason: error,
+        })));
+
+      const suggestions = validationResult.validations
+        .filter(v => v.status === 'warning')
+        .flatMap(v => v.warnings);
+
+      return {
+        status: hasFailures ? 'rejected' : hasWarnings ? 'needs-review' : 'approved',
+        message: `Phase -1 Gate ${validationResult.status}: ${validationResult.validations.length} articles validated`,
+        violations: violations.length > 0 ? violations : undefined,
+        suggestions: suggestions.length > 0 ? suggestions : undefined,
+      };
+    } catch (error) {
+      // If constitution file is missing or validation fails, return error
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // eslint-disable-next-line no-console
+      console.error(`[${this.platform}] Phase -1 Gate validation failed:`, errorMessage);
+
+      return {
+        status: 'rejected',
+        message: `Phase -1 Gate validation error: ${errorMessage}`,
+        violations: [{
+          article: 0,
+          reason: `Validation system error: ${errorMessage}`,
+        }],
+        suggestions: ['Ensure steering/constitution.md exists and is properly formatted'],
+      };
+    }
   }
 }
