@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/adapter-windsurf",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Windsurf IDE adapter for MUSUHI 2.0",
   "type": "module",
   "main": "./dist/index.js",

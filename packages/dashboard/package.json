@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/dashboard",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "TUI Dashboard for MUSUHI 2.0",
   "type": "module",
   "main": "./dist/index.js",

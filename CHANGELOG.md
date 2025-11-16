@@ -17,6 +17,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.2] - 2025-11-16
+
+### Fixed
+
+#### CLI Init Command
+
+- **init command argument**: Fixed `musuhi init <project-name>` to properly create project directory
+  - Previously: Only worked with `--dir` option, didn't create new directory
+  - Now: Accepts project name as argument and creates the directory
+  - Example: `npx @musuhi-ng/cli init my-project` now creates `my-project/` directory
+
+### Added
+
+#### CLI Init Enhancements
+
+- **package.json creation**: Automatically creates package.json in new projects
+- **Improved success message**: Shows correct next steps including `cd` command when using project name argument
+
+---
+
 ## [1.0.1] - 2025-11-16
 
 ### Fixed

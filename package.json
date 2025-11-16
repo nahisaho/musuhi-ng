@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/monorepo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MUSUHI 2.0 - Specification Driven Development Framework",
   "private": true,
   "type": "module",

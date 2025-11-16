@@ -4,16 +4,25 @@
  * @module @musuhi-ng/cli/commands
  */
 
-import { Command } from 'commander';
 import { promises as fs } from 'fs';
 import path from 'path';
 
+import { Command } from 'commander';
+
+interface InitOptions {
+  dir?: string;
+}
+
 export const initCommand = new Command('init')
   .description('Initialize a new MUSUHI project')
-  .option('-d, --dir <directory>', 'Target directory', process.cwd())
-  .action(async (options) => {
-    const targetDir = options.dir;
+  .argument('[project-name]', 'Project name (creates a new directory)')
+  .option('-d, --dir <directory>', 'Target directory (overrides project-name)')
+  .action(async (projectName: string | undefined, options: InitOptions) => {
+    // Determine target directory
+    const targetDir =
+      options.dir || (projectName ? path.join(process.cwd(), projectName) : process.cwd());
 
+    // eslint-disable-next-line no-console
     console.log(`Initializing MUSUHI project in ${targetDir}...`);
 
     try {
@@ -23,12 +32,32 @@ export const initCommand = new Command('init')
       // Create configuration files
       await createConfigFiles(targetDir);
 
+      // Create package.json if it doesn't exist
+      await createPackageJson(targetDir, projectName || path.basename(targetDir));
+
+      // eslint-disable-next-line no-console
       console.log('✓ MUSUHI project initialized successfully!');
+      // eslint-disable-next-line no-console
       console.log('\nNext steps:');
-      console.log('  1. Review the constitution.md file');
-      console.log('  2. Start with: musuhi workflow start research');
-      console.log('  3. Follow the 8-stage SDD workflow');
+      if (projectName) {
+        // eslint-disable-next-line no-console
+        console.log(`  1. cd ${projectName}`);
+        // eslint-disable-next-line no-console
+        console.log('  2. Review the steering/constitution.md file');
+        // eslint-disable-next-line no-console
+        console.log('  3. Start with: musuhi workflow start research');
+        // eslint-disable-next-line no-console
+        console.log('  4. Follow the 8-stage SDD workflow');
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('  1. Review the steering/constitution.md file');
+        // eslint-disable-next-line no-console
+        console.log('  2. Start with: musuhi workflow start research');
+        // eslint-disable-next-line no-console
+        console.log('  3. Follow the 8-stage SDD workflow');
+      }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error initializing project:', error);
       process.exit(1);
     }
@@ -65,10 +94,7 @@ async function createConfigFiles(baseDir: string): Promise<void> {
     },
   };
 
-  await fs.writeFile(
-    path.join(baseDir, '.musuhi', 'config.json'),
-    JSON.stringify(config, null, 2)
-  );
+  await fs.writeFile(path.join(baseDir, '.musuhi', 'config.json'), JSON.stringify(config, null, 2));
 
   // Create basic constitution.md
   const constitutionContent = `# MUSUHI Constitution
@@ -121,8 +147,34 @@ async function createConfigFiles(baseDir: string): Promise<void> {
 **Enforcement**: Phase -1 Gate validates API documentation and tests.
 `;
 
-  await fs.writeFile(
-    path.join(baseDir, 'steering', 'constitution.md'),
-    constitutionContent
-  );
+  await fs.writeFile(path.join(baseDir, 'steering', 'constitution.md'), constitutionContent);
+}
+
+async function createPackageJson(baseDir: string, projectName: string): Promise<void> {
+  const packageJsonPath = path.join(baseDir, 'package.json');
+
+  // Check if package.json already exists
+  try {
+    await fs.access(packageJsonPath);
+    // eslint-disable-next-line no-console
+    console.log('  ℹ package.json already exists, skipping...');
+    return;
+  } catch {
+    // File doesn't exist, create it
+  }
+
+  const packageJson = {
+    name: projectName,
+    version: '0.1.0',
+    description: 'MUSUHI project following Specification Driven Development',
+    private: true,
+    scripts: {
+      test: 'echo "Error: no test specified" && exit 1',
+    },
+    keywords: ['musuhi', 'sdd', 'specification-driven-development'],
+    author: '',
+    license: 'MIT',
+  };
+
+  await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
 }

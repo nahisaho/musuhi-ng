@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/gap-analyzer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Brownfield gap analysis for MUSUHI 2.0 - Feature 5",
   "type": "module",
   "main": "./dist/index.js",

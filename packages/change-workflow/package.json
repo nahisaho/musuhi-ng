@@ -1,6 +1,6 @@
 {
   "name": "@musuhi-ng/change-workflow",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "8-stage SDD workflow engine for MUSUHI 2.0",
   "type": "module",
   "main": "./dist/index.js",
