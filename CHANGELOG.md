@@ -17,6 +17,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.5] - 2025-11-16
+
+### Added
+
+#### Workflow Command Shortcuts
+
+- **Direct stage commands**: Added convenient shortcut commands for workflow stages
+  - `musuhi workflow research "<topic>"` - Start research stage with topic
+  - `musuhi workflow requirements` - Start requirements stage
+  - `musuhi workflow design` - Start design stage
+  - `musuhi workflow tasks` - Start tasks stage
+  - `musuhi workflow execute` - Execute implementation, testing, and deployment phases
+  - These shortcuts complement existing `start`, `complete`, `status`, and `list` commands
+  - Improves user experience by matching documented command syntax
+
+---
+
 ## [1.0.4] - 2025-11-16
 
 ### Changed
