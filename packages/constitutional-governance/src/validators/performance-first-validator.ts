@@ -1,7 +1,7 @@
 /**
  * Article 6: Performance-First Validator
  * Ensures code meets performance budgets and best practices
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationRule, ValidationContext, ValidationResult } from '../types.js';

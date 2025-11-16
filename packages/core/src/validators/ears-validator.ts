@@ -1,7 +1,7 @@
 /**
  * EARS Requirements Validator
  * Validates requirements follow EARS format
- * @module @musuhi/core/validators
+ * @module @musuhi-ng/core/validators
  */
 
 import type { EARSPattern, EARSRequirement, EARSValidation } from '../types/ears.js';

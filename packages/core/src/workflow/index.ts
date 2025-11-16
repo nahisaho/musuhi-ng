@@ -1,6 +1,6 @@
 /**
  * Workflow Module
- * @module @musuhi/core/workflow
+ * @module @musuhi-ng/core/workflow
  */
 
 export * from './workflow-engine.js';

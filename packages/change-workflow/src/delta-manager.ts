@@ -1,7 +1,7 @@
 /**
  * Delta Manager
  * Manages spec file changes and deltas
- * @module @musuhi/change-workflow
+ * @module @musuhi-ng/change-workflow
  */
 
 import { promises as fs } from 'fs';

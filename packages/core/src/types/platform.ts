@@ -1,7 +1,7 @@
 /**
  * Platform Adapter Types
  * Based on ADR-007: Multi-Platform Adapter Architecture
- * @module @musuhi/core/types/platform
+ * @module @musuhi-ng/core/types/platform
  */
 
 /**

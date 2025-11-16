@@ -1,6 +1,6 @@
 /**
  * Platform adapter implementations
- * @module @musuhi/platform-adapters/adapters
+ * @module @musuhi-ng/platform-adapters/adapters
  */
 
 // CLI Adapters (AC-8.2)

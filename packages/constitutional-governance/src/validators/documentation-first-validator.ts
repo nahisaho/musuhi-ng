@@ -1,7 +1,7 @@
 /**
  * Article 4: Documentation-First Validator
  * Ensures code has proper documentation before implementation
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationRule, ValidationContext, ValidationResult } from '../types.js';

@@ -1,7 +1,7 @@
 /**
  * Traceability Engine Implementation
  * Maps requirements ↔ design ↔ tasks ↔ code ↔ tests
- * @module @musuhi/core/traceability
+ * @module @musuhi-ng/core/traceability
  */
 
 /**

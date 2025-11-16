@@ -1,6 +1,6 @@
 /**
  * Events module
- * @module @musuhi/core/events
+ * @module @musuhi-ng/core/events
  */
 
 export * from './event-bus.js';

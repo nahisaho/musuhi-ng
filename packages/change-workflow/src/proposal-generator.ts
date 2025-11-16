@@ -1,7 +1,7 @@
 /**
  * Proposal Generator
  * Generates change proposal documents (proposal.md)
- * @module @musuhi/change-workflow
+ * @module @musuhi-ng/change-workflow
  */
 
 import type { ChangeProposal } from './types.js';

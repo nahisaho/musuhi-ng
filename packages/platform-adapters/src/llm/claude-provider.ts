@@ -1,7 +1,7 @@
 /**
  * AC-8.7: LLM Abstraction Layer
  * Claude (Anthropic) LLM provider implementation
- * @module @musuhi/platform-adapters/llm
+ * @module @musuhi-ng/platform-adapters/llm
  */
 
 import { exec } from 'node:child_process';

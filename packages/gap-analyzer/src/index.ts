@@ -5,7 +5,7 @@
  * Automated gap detection comparing requirements vs implementation.
  *
  * @packageDocumentation
- * @module @musuhi/gap-analyzer
+ * @module @musuhi-ng/gap-analyzer
  */
 
 // Main analyzer

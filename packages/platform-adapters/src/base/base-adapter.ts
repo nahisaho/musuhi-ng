@@ -1,7 +1,7 @@
 /**
  * AC-8.1: Platform-Agnostic Core
  * Base abstract adapter class for all platform adapters
- * @module @musuhi/platform-adapters/base
+ * @module @musuhi-ng/platform-adapters/base
  */
 
 import type {

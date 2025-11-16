@@ -1,13 +1,13 @@
 /**
  * Phase Gate Validator Integration Tests
  * Tests Phase -1 Gate validation with real constitution
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ConstitutionLoader } from '../constitution-loader.js';
 import { PhaseGateValidator } from '../phase-gate.js';
-import { NodeFileSystem, Article } from '@musuhi/core';
+import { NodeFileSystem, Article } from '@musuhi-ng/core';
 import type { ValidationContext, ArticleConfig } from '../types.js';
 
 describe('PhaseGateValidator Integration', () => {

@@ -1,7 +1,7 @@
 /**
  * Node.js File System Implementation
  * Implements IFileSystem interface using Node.js fs module
- * @module @musuhi/core/file-system
+ * @module @musuhi-ng/core/file-system
  */
 
 import { promises as fs } from 'fs';

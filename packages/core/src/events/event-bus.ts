@@ -1,7 +1,7 @@
 /**
  * Event Bus Implementation
  * Pub/sub pattern for real-time dashboard updates and inter-component communication
- * @module @musuhi/core/events
+ * @module @musuhi-ng/core/events
  */
 
 import { EventEmitter } from 'events';

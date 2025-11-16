@@ -1,13 +1,13 @@
 /**
  * Validate Command Tests
- * @module @musuhi/cli/commands
+ * @module @musuhi-ng/cli/commands
  */
 
 import { describe, it, expect } from 'vitest';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { ConstitutionLoader } from '@musuhi/constitutional-governance';
-import { NodeFileSystem } from '@musuhi/core';
+import { ConstitutionLoader } from '@musuhi-ng/constitutional-governance';
+import { NodeFileSystem } from '@musuhi-ng/core';
 
 describe('Validate Command Integration', () => {
   const projectRoot = '/home/nahisaho/GitHub/musuhi2';

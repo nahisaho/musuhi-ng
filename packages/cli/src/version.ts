@@ -1,6 +1,6 @@
 /**
  * Version information
- * @module @musuhi/cli
+ * @module @musuhi-ng/cli
  */
 
 export const version = '0.1.0';

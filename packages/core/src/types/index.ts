@@ -1,6 +1,6 @@
 /**
  * Core types and interfaces for MUSUHI 2.0
- * @module @musuhi/core/types
+ * @module @musuhi-ng/core/types
  */
 
 // Re-export all type definitions

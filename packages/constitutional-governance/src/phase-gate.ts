@@ -1,7 +1,7 @@
 /**
  * Phase -1 Gate
  * Pre-approval validation before any change
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import type {

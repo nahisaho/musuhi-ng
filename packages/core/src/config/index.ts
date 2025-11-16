@@ -1,6 +1,6 @@
 /**
  * Configuration module
- * @module @musuhi/core/config
+ * @module @musuhi-ng/core/config
  */
 
 export * from './config-loader.js';

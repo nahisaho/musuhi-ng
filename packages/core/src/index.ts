@@ -1,6 +1,6 @@
 /**
  * MUSUHI 2.0 Core Framework
- * @module @musuhi/core
+ * @module @musuhi-ng/core
  */
 
 // Export all types

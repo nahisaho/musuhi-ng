@@ -1,7 +1,7 @@
 /**
  * AC-8.3: IDE Extension Support
  * VS Code + GitHub Copilot integration adapter (mock implementation)
- * @module @musuhi/platform-adapters/adapters
+ * @module @musuhi-ng/platform-adapters/adapters
  */
 
 import { BasePlatformAdapter } from '../base/base-adapter.js';

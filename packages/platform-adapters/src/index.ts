@@ -1,5 +1,5 @@
 /**
- * @musuhi/platform-adapters
+ * @musuhi-ng/platform-adapters
  * Multi-platform AI integration adapters for MUSUHI 2.0
  *
  * Implements Feature 8: Multi-Platform AI Integration
@@ -13,10 +13,10 @@
  * - AC-8.8: Auto-Detection
  * - AC-8.9: Compatibility Matrix
  *
- * @module @musuhi/platform-adapters
+ * @module @musuhi-ng/platform-adapters
  */
 
-// Re-export types from @musuhi/core
+// Re-export types from @musuhi-ng/core
 export type {
   PlatformType,
   AgentConfig,

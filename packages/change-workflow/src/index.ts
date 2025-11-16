@@ -1,6 +1,6 @@
 /**
  * Change Workflow Package
- * @module @musuhi/change-workflow
+ * @module @musuhi-ng/change-workflow
  */
 
 export * from './types.js';

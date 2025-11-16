@@ -1,6 +1,6 @@
 /**
  * Change Workflow Types
- * @module @musuhi/change-workflow
+ * @module @musuhi-ng/change-workflow
  */
 
 /**

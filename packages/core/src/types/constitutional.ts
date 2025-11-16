@@ -1,7 +1,7 @@
 /**
  * Constitutional Governance Types
  * Based on ADR-001 and steering/constitution.md
- * @module @musuhi/core/types/constitutional
+ * @module @musuhi-ng/core/types/constitutional
  */
 
 /**

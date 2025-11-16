@@ -1,6 +1,6 @@
 /**
  * Context module
- * @module @musuhi/core/context
+ * @module @musuhi-ng/core/context
  */
 
 export * from './context-manager.js';

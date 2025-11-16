@@ -1,6 +1,6 @@
 /**
  * Traceability module
- * @module @musuhi/core/traceability
+ * @module @musuhi-ng/core/traceability
  */
 
 export * from './traceability-engine.js';

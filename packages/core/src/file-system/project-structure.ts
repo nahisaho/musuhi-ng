@@ -1,7 +1,7 @@
 /**
  * Project Structure Management
  * Manages MUSUHI project directory structure
- * @module @musuhi/core/file-system
+ * @module @musuhi-ng/core/file-system
  */
 
 import * as path from 'path';

@@ -1,6 +1,6 @@
 /**
  * Event Bus Tests
- * @module @musuhi/core/events
+ * @module @musuhi-ng/core/events
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';

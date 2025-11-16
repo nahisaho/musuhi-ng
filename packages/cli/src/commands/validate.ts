@@ -1,15 +1,15 @@
 /**
  * Validate Command
  * Validate code against constitutional principles
- * @module @musuhi/cli/commands
+ * @module @musuhi-ng/cli/commands
  */
 
 import { Command } from 'commander';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { PhaseGateValidator, ConstitutionLoader } from '@musuhi/constitutional-governance';
-import { NodeFileSystem } from '@musuhi/core';
-import type { ValidationContext, Article } from '@musuhi/constitutional-governance';
+import { PhaseGateValidator, ConstitutionLoader } from '@musuhi-ng/constitutional-governance';
+import { NodeFileSystem } from '@musuhi-ng/core';
+import type { ValidationContext, Article } from '@musuhi-ng/constitutional-governance';
 
 export const validateCommand = new Command('validate')
   .description('Validate code against constitutional principles')

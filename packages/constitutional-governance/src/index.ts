@@ -1,6 +1,6 @@
 /**
  * Constitutional Governance Package
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 export * from './types.js';

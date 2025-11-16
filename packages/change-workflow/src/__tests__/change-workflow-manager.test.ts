@@ -1,11 +1,11 @@
 /**
  * Change Workflow Manager Tests
- * @module @musuhi/change-workflow
+ * @module @musuhi-ng/change-workflow
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ChangeWorkflowManager } from '../change-workflow-manager.js';
-import { NodeFileSystem } from '@musuhi/core';
+import { NodeFileSystem } from '@musuhi-ng/core';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 

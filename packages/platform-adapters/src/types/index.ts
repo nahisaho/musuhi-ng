@@ -1,7 +1,7 @@
 /**
  * AC-8.1: Platform-Agnostic Core
- * Re-export platform types from @musuhi/core
- * @module @musuhi/platform-adapters/types
+ * Re-export platform types from @musuhi-ng/core
+ * @module @musuhi-ng/platform-adapters/types
  */
 
 export type {
@@ -13,4 +13,4 @@ export type {
   PhaseGate,
   GateResult,
   IPlatformAdapter,
-} from '@musuhi/core';
+} from '@musuhi-ng/core';

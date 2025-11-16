@@ -1,7 +1,7 @@
 /**
  * AC-8.2: CLI Interface Support
  * Base class for CLI-based platform adapters
- * @module @musuhi/platform-adapters/base
+ * @module @musuhi-ng/platform-adapters/base
  */
 
 import { exec } from 'node:child_process';
@@ -112,7 +112,7 @@ export abstract class CLIAdapterBase extends BasePlatformAdapter {
       `[${this.platform}] Phase -1 Gate: Validating Articles [${gate.articles.join(', ')}]`
     );
 
-    // TODO: Integrate with @musuhi/constitutional-governance
+    // TODO: Integrate with @musuhi-ng/constitutional-governance
     // For now, return approval with logged message
     return {
       status: 'approved',

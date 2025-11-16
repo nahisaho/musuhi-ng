@@ -1,7 +1,7 @@
 /**
  * AC-8.7: LLM Abstraction Layer
  * OpenAI GPT-4 LLM provider implementation
- * @module @musuhi/platform-adapters/llm
+ * @module @musuhi-ng/platform-adapters/llm
  */
 
 import { exec } from 'node:child_process';

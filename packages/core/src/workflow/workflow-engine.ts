@@ -1,7 +1,7 @@
 /**
  * Workflow Engine
  * Manages the 8-stage SDD workflow
- * @module @musuhi/core/workflow
+ * @module @musuhi-ng/core/workflow
  */
 
 import type {

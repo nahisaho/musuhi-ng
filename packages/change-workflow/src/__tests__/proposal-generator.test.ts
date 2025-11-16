@@ -1,6 +1,6 @@
 /**
  * Proposal Generator Tests
- * @module @musuhi/change-workflow
+ * @module @musuhi-ng/change-workflow
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';

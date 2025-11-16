@@ -1,7 +1,7 @@
 /**
  * AC-8.7: LLM Abstraction Layer
  * Base interface and types for LLM providers
- * @module @musuhi/platform-adapters/llm
+ * @module @musuhi-ng/platform-adapters/llm
  */
 
 /**

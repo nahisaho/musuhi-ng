@@ -1,7 +1,7 @@
 /**
  * AC-8.8: Auto-Detection
  * Adapter factory with platform auto-detection
- * @module @musuhi/platform-adapters/factory
+ * @module @musuhi-ng/platform-adapters/factory
  */
 
 import { execSync } from 'node:child_process';
@@ -204,7 +204,7 @@ export class AdapterFactory {
     }
 
     try {
-      // TODO: Use ConfigLoader from @musuhi/core when available
+      // TODO: Use ConfigLoader from @musuhi-ng/core when available
       // For now, return null (config loading not implemented)
       return null;
     } catch {

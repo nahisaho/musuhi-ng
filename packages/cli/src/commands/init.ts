@@ -1,7 +1,7 @@
 /**
  * Init Command
  * Initialize a new MUSUHI project
- * @module @musuhi/cli/commands
+ * @module @musuhi-ng/cli/commands
  */
 
 import { Command } from 'commander';

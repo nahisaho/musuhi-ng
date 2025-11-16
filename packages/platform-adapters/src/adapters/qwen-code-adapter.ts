@@ -1,7 +1,7 @@
 /**
  * AC-8.2: CLI Interface Support
  * Alibaba Qwen Code integration adapter
- * @module @musuhi/platform-adapters/adapters
+ * @module @musuhi-ng/platform-adapters/adapters
  */
 
 import { CLIAdapterBase } from '../base/cli-adapter-base.js';

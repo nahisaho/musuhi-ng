@@ -1,6 +1,6 @@
 /**
  * MUSUHI CLI
- * @module @musuhi/cli
+ * @module @musuhi-ng/cli
  */
 
 export * from './commands/init.js';

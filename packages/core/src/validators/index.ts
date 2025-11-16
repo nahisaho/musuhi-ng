@@ -1,6 +1,6 @@
 /**
  * Validators Module
- * @module @musuhi/core/validators
+ * @module @musuhi-ng/core/validators
  */
 
 export * from './ears-validator.js';

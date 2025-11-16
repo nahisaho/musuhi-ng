@@ -1,12 +1,12 @@
 /**
  * Validation Rule Engine Tests
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import { describe, it, expect } from 'vitest';
 import { ValidationRuleEngine } from '../validation-rule-engine.js';
-import type { ValidationRule, ValidationContext, ValidationResult } from '@musuhi/core';
-import { Article } from '@musuhi/core';
+import type { ValidationRule, ValidationContext, ValidationResult } from '@musuhi-ng/core';
+import { Article } from '@musuhi-ng/core';
 
 describe('ValidationRuleEngine', () => {
   let engine: ValidationRuleEngine;

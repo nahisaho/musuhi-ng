@@ -1,7 +1,7 @@
 /**
  * Config Loader Implementation
  * Loads and validates .musuhi/config.yaml configuration
- * @module @musuhi/core/config
+ * @module @musuhi-ng/core/config
  */
 
 import { promises as fs } from 'fs';

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * MUSUHI CLI Entry Point
- * @module @musuhi/cli
+ * @module @musuhi-ng/cli
  */
 
 import { Command } from 'commander';

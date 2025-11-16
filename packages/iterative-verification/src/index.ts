@@ -1,5 +1,5 @@
 /**
- * @musuhi/iterative-verification
+ * @musuhi-ng/iterative-verification
  *
  * Task-by-task execution with human review checkpoints for early error detection.
  *

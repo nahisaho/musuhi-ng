@@ -1,7 +1,7 @@
 /**
  * Article 1: Library-First Validator
  * Validates that existing libraries are preferred over custom code
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationContext, ValidationResult, ValidationRule } from '../types.js';

@@ -1,7 +1,7 @@
 /**
  * Article 7: Accessibility-First Validator
  * Ensures code meets WCAG 2.1 AA accessibility standards
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationRule, ValidationContext, ValidationResult } from '../types.js';

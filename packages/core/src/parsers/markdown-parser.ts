@@ -2,7 +2,7 @@
  * Markdown Parser
  * Uses unified + remark for parsing and stringifying Markdown
  * Based on ADR-003 and Article 1 (Library-First)
- * @module @musuhi/core/parsers
+ * @module @musuhi-ng/core/parsers
  */
 
 import { unified } from 'unified';

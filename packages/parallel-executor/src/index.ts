@@ -18,7 +18,7 @@
  * ## Example Usage
  *
  * ```typescript
- * import { ParallelExecutor, Task } from '@musuhi/parallel-executor';
+ * import { ParallelExecutor, Task } from '@musuhi-ng/parallel-executor';
  *
  * const tasks: Task[] = [
  *   {

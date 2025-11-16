@@ -1,7 +1,7 @@
 /**
  * Validation Report Generator
  * Generates human-readable reports from validation results
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import type { AggregatedValidationResult } from './validation-rule-engine.js';

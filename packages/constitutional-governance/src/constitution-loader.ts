@@ -1,10 +1,10 @@
 /**
  * Constitution Loader
  * Loads and manages the constitution.md file
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
-import type { IFileSystem } from '@musuhi/core';
+import type { IFileSystem } from '@musuhi-ng/core';
 import type { Article, ArticleConfig } from './types.js';
 
 /**

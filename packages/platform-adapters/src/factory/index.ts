@@ -1,6 +1,6 @@
 /**
  * Adapter factory
- * @module @musuhi/platform-adapters/factory
+ * @module @musuhi-ng/platform-adapters/factory
  */
 
 export { AdapterFactory } from './adapter-factory.js';

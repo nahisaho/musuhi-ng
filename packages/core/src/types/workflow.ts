@@ -1,7 +1,7 @@
 /**
  * SDD Workflow Types
  * Based on steering/rules/workflow.md (8-stage workflow)
- * @module @musuhi/core/types/workflow
+ * @module @musuhi-ng/core/types/workflow
  */
 
 /**

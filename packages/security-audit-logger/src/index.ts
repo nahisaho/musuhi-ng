@@ -1,5 +1,5 @@
 /**
- * @musuhi/security-audit-logger
+ * @musuhi-ng/security-audit-logger
  *
  * Security audit logging for MUSUHI - Constitutional SDD framework.
  *

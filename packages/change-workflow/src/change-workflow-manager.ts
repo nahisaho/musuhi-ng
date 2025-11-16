@@ -1,10 +1,10 @@
 /**
  * Change Workflow Manager
  * Manages specs/, changes/, archive/ directories
- * @module @musuhi/change-workflow
+ * @module @musuhi-ng/change-workflow
  */
 
-import type { IFileSystem } from '@musuhi/core';
+import type { IFileSystem } from '@musuhi-ng/core';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import type { ChangeWorkspace } from './types.js';

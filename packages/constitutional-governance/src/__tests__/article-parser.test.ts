@@ -1,13 +1,13 @@
 /**
  * Article Parser Tests
  * Tests Article validation and parsing
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ArticleParser } from '../article-parser.js';
 import { ConstitutionLoader } from '../constitution-loader.js';
-import { NodeFileSystem, Article } from '@musuhi/core';
+import { NodeFileSystem, Article } from '@musuhi-ng/core';
 import type { ArticleConfig } from '../types.js';
 
 describe('ArticleParser', () => {

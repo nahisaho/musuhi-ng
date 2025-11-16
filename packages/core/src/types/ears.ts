@@ -1,7 +1,7 @@
 /**
  * EARS (Easy Approach to Requirements Syntax) Types
  * Based on steering/rules/ears-format.md
- * @module @musuhi/core/types/ears
+ * @module @musuhi-ng/core/types/ears
  */
 
 /**

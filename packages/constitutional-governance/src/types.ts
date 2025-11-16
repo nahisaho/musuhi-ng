@@ -1,6 +1,6 @@
 /**
  * Constitutional Governance Types
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 export type {
@@ -11,6 +11,6 @@ export type {
   ValidationResult,
   PhaseMinusOneGate,
   ConstitutionalConfig,
-} from '@musuhi/core';
+} from '@musuhi-ng/core';
 
-export { Article as ArticleEnum } from '@musuhi/core';
+export { Article as ArticleEnum } from '@musuhi-ng/core';

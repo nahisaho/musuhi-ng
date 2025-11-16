@@ -1,6 +1,6 @@
 /**
  * Base adapter classes
- * @module @musuhi/platform-adapters/base
+ * @module @musuhi-ng/platform-adapters/base
  */
 
 export { BasePlatformAdapter } from './base-adapter.js';

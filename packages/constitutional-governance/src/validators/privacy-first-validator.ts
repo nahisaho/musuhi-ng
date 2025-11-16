@@ -1,7 +1,7 @@
 /**
  * Article 8: Privacy-First Validator
  * Ensures code follows privacy best practices (GDPR, data minimization)
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationRule, ValidationContext, ValidationResult } from '../types.js';

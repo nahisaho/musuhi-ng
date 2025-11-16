@@ -1,7 +1,7 @@
 /**
  * File System Abstraction Types
  * Based on ADR-002: File-Based Storage vs. Database
- * @module @musuhi/core/types/file-system
+ * @module @musuhi-ng/core/types/file-system
  */
 
 /**

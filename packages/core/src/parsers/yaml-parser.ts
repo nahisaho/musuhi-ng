@@ -2,7 +2,7 @@
  * YAML Parser
  * Uses yaml library for parsing and stringifying YAML
  * Based on ADR-004 and Article 1 (Library-First)
- * @module @musuhi/core/parsers
+ * @module @musuhi-ng/core/parsers
  */
 
 import YAML from 'yaml';

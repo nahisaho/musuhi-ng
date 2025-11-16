@@ -1,7 +1,7 @@
 /**
  * Article 9: Integration-First Validator
  * Ensures proper API contracts and integration testing
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationRule, ValidationContext, ValidationResult } from '../types.js';

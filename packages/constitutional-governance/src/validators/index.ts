@@ -1,6 +1,6 @@
 /**
  * Validators Module
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 export * from './library-first-validator.js';

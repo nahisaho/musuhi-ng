@@ -1,12 +1,12 @@
 /**
  * Validation Report Generator Tests
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ValidationReportGenerator } from '../validation-report-generator.js';
 import type { AggregatedValidationResult } from '../validation-rule-engine.js';
-import { Article } from '@musuhi/core';
+import { Article } from '@musuhi-ng/core';
 
 describe('ValidationReportGenerator', () => {
   let generator: ValidationReportGenerator;

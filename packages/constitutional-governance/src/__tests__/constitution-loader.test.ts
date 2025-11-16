@@ -1,12 +1,12 @@
 /**
  * Constitution Loader Integration Tests
  * Tests against real constitution.md file
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ConstitutionLoader } from '../constitution-loader.js';
-import { NodeFileSystem, Article } from '@musuhi/core';
+import { NodeFileSystem, Article } from '@musuhi-ng/core';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

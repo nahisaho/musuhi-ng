@@ -1,12 +1,12 @@
 /**
  * Workflow Command
  * Manage SDD workflow stages
- * @module @musuhi/cli/commands
+ * @module @musuhi-ng/cli/commands
  */
 
 import { Command } from 'commander';
-import { WorkflowEngine } from '@musuhi/core';
-import type { WorkflowStage } from '@musuhi/core';
+import { WorkflowEngine } from '@musuhi-ng/core';
+import type { WorkflowStage } from '@musuhi-ng/core';
 
 export const workflowCommand = new Command('workflow')
   .description('Manage SDD workflow stages');

@@ -1,7 +1,7 @@
 /**
  * Article 5: Simplicity-First Validator
  * Ensures code maintains low complexity (cyclomatic complexity < 10)
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationRule, ValidationContext, ValidationResult } from '../types.js';

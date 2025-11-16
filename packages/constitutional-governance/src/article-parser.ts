@@ -1,7 +1,7 @@
 /**
  * Article Parser
  * Validates and parses Article structure from constitution
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import type { Article, ArticleConfig } from './types.js';

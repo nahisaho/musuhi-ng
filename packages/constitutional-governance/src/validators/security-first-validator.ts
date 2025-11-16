@@ -1,7 +1,7 @@
 /**
  * Article 3: Security-First Validator
  * Validates security best practices (OWASP Top 10)
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationContext, ValidationResult, ValidationRule } from '../types.js';

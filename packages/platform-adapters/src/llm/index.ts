@@ -1,6 +1,6 @@
 /**
  * LLM abstraction layer
- * @module @musuhi/platform-adapters/llm
+ * @module @musuhi-ng/platform-adapters/llm
  */
 
 export type { ILLMProvider, LLMConfig } from './llm-provider.js';

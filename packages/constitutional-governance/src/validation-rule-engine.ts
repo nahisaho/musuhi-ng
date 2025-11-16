@@ -1,7 +1,7 @@
 /**
  * Validation Rule Engine
  * Executes validation rules and aggregates results
- * @module @musuhi/constitutional-governance
+ * @module @musuhi-ng/constitutional-governance
  */
 
 import type {
@@ -9,7 +9,7 @@ import type {
   ValidationContext,
   ValidationResult,
   Article,
-} from '@musuhi/core';
+} from '@musuhi-ng/core';
 
 /**
  * Aggregated validation result for multiple rules

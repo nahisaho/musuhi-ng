@@ -1,6 +1,6 @@
 /**
  * Config Loader Tests
- * @module @musuhi/core/config
+ * @module @musuhi-ng/core/config
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';

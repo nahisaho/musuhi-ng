@@ -1,7 +1,7 @@
 /**
  * Article 2: Test-First Validator
  * Validates that tests exist before implementation
- * @module @musuhi/constitutional-governance/validators
+ * @module @musuhi-ng/constitutional-governance/validators
  */
 
 import type { ValidationContext, ValidationResult, ValidationRule } from '../types.js';

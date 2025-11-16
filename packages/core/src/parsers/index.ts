@@ -1,6 +1,6 @@
 /**
  * Parsers Module
- * @module @musuhi/core/parsers
+ * @module @musuhi-ng/core/parsers
  */
 
 export * from './markdown-parser.js';

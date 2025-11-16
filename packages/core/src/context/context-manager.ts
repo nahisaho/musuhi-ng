@@ -1,7 +1,7 @@
 /**
  * Context Manager Implementation
  * Loads and caches steering context files (structure.md, tech.md, product.md, constitution.md)
- * @module @musuhi/core/context
+ * @module @musuhi-ng/core/context
  */
 
 import { promises as fs } from 'fs';
