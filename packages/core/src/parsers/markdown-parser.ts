@@ -5,7 +5,7 @@
  * @module @musuhi-ng/core/parsers
  */
 
-import type { Root, Content, Heading, Text } from 'mdast';
+import type { Root, Content, Heading } from 'mdast';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
