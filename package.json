@@ -53,5 +53,11 @@
   "bugs": {
     "url": "https://github.com/musuhi/musuhi2/issues"
   },
-  "homepage": "https://github.com/musuhi/musuhi2#readme"
+  "homepage": "https://github.com/musuhi/musuhi2#readme",
+  "pnpm": {
+    "overrides": {
+      "xml2js": ">=0.5.0",
+      "esbuild": ">=0.25.0"
+    }
+  }
 }
