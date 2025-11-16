@@ -6,6 +6,7 @@
 
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
+
 import type { ILLMProvider, LLMConfig } from './llm-provider.js';
 
 const execAsync = promisify(exec);
@@ -35,10 +36,7 @@ export class ClaudeProvider implements ILLMProvider {
    * @param context - Additional context
    * @returns Promise resolving to generated response
    */
-  async invoke(
-    prompt: string,
-    context?: Record<string, unknown>
-  ): Promise<string> {
+  async invoke(prompt: string, context?: Record<string, unknown>): Promise<string> {
     try {
       // Check if Claude CLI is available
       const cliArgs = ['--model', this.model];
@@ -72,10 +70,7 @@ export class ClaudeProvider implements ILLMProvider {
   /**
    * Mock invocation for testing/development
    */
-  private mockInvoke(
-    prompt: string,
-    context?: Record<string, unknown>
-  ): string {
+  private mockInvoke(prompt: string, context?: Record<string, unknown>): string {
     return `Mock Claude response to: "${prompt.substring(0, 50)}..."${
       context ? ` (context: ${Object.keys(context).join(', ')})` : ''
     }`;
@@ -94,20 +89,92 @@ export class ClaudeProvider implements ILLMProvider {
    * @param prompt - Input prompt
    * @param context - Additional context
    * @param onChunk - Callback for each chunk
+   *
+   * Real implementation with Anthropic SDK:
+   * ```typescript
+   * import Anthropic from '@anthropic-ai/sdk';
+   *
+   * const client = new Anthropic({ apiKey: this.config.apiKey });
+   * const stream = await client.messages.create({
+   *   model: this.model,
+   *   max_tokens: this.config.maxTokens || 4096,
+   *   temperature: this.config.temperature || 0.7,
+   *   messages: [{ role: 'user', content: prompt }],
+   *   stream: true,
+   * });
+   *
+   * for await (const event of stream) {
+   *   if (event.type === 'content_block_delta' &&
+   *       event.delta.type === 'text_delta') {
+   *     onChunk(event.delta.text);
+   *   }
+   * }
+   * ```
    */
   async stream(
     prompt: string,
     context: Record<string, unknown> | undefined,
     onChunk: (chunk: string) => void
   ): Promise<void> {
-    // NOTE: Real implementation would use Anthropic SDK with streaming
-    // For now, simulate streaming by chunking the response
-    const response = await this.invoke(prompt, context);
-    const chunks = response.split(' ');
-
-    for (const chunk of chunks) {
-      onChunk(chunk + ' ');
-      await new Promise((resolve) => setTimeout(resolve, 10));
+    // Check if we have API key for real streaming
+    if (this.config.apiKey && typeof this.config.apiKey === 'string') {
+      try {
+        // Try to use Anthropic SDK if available
+        await this.streamWithSDK(prompt, context, onChunk);
+        return;
+      } catch (error) {
+        // Fall through to mock streaming
+        console.warn('[claude-provider] SDK streaming failed, using mock mode:', error);
+      }
     }
+
+    // Fallback: Simulate streaming by chunking the response
+    const response = await this.invoke(prompt, context);
+    const words = response.split(/(\s+)/); // Preserve whitespace
+
+    for (const word of words) {
+      if (word.length > 0) {
+        onChunk(word);
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+    }
+  }
+
+  /**
+   * Stream with Anthropic SDK (placeholder for actual implementation)
+   * @private
+   */
+  private streamWithSDK(
+    _prompt: string,
+    _context: Record<string, unknown> | undefined,
+    _onChunk: (chunk: string) => void
+  ): Promise<void> {
+    // This method would use the actual Anthropic SDK
+    // For now, throw to trigger fallback to mock streaming
+    return Promise.reject(new Error('Anthropic SDK not available - install @anthropic-ai/sdk'));
+
+    /*
+     * Real implementation (uncomment when SDK is installed):
+     *
+     * import Anthropic from '@anthropic-ai/sdk';
+     *
+     * const client = new Anthropic({ apiKey: this.config.apiKey });
+     *
+     * const stream = await client.messages.create({
+     *   model: this.model,
+     *   max_tokens: this.config.maxTokens || 4096,
+     *   temperature: this.config.temperature || 0.7,
+     *   system: _context ? JSON.stringify(_context) : undefined,
+     *   messages: [{ role: 'user', content: _prompt }],
+     *   stream: true,
+     * });
+     *
+     * for await (const event of stream) {
+     *   if (event.type === 'content_block_delta' &&
+     *       event.delta.type === 'text_delta') {
+     *     _onChunk(event.delta.text);
+     *   }
+     * }
+     */
   }
 }

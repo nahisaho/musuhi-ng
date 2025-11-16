@@ -6,6 +6,7 @@
 
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
+
 import type { ILLMProvider, LLMConfig } from './llm-provider.js';
 
 const execAsync = promisify(exec);
@@ -34,10 +35,7 @@ export class QwenProvider implements ILLMProvider {
    * @param context - Additional context
    * @returns Promise resolving to generated response
    */
-  async invoke(
-    prompt: string,
-    context?: Record<string, unknown>
-  ): Promise<string> {
+  async invoke(prompt: string, context?: Record<string, unknown>): Promise<string> {
     try {
       const cliArgs = ['code-gen', '--model', this.model];
 
@@ -68,10 +66,7 @@ export class QwenProvider implements ILLMProvider {
   /**
    * Mock invocation for testing/development
    */
-  private mockInvoke(
-    prompt: string,
-    context?: Record<string, unknown>
-  ): string {
+  private mockInvoke(prompt: string, context?: Record<string, unknown>): string {
     return `Mock Qwen response to: "${prompt.substring(0, 50)}..."${
       context ? ` (context: ${Object.keys(context).join(', ')})` : ''
     }`;
@@ -83,5 +78,26 @@ export class QwenProvider implements ILLMProvider {
    */
   supportsStreaming(): boolean {
     return false;
+  }
+
+  /**
+   * Stream response (not supported)
+   *
+   * Qwen models currently do not support streaming responses.
+   * This method is provided for interface compatibility but will
+   * fall back to non-streaming invocation.
+   *
+   * @param prompt - Input prompt
+   * @param context - Additional context
+   * @param onChunk - Callback for each chunk
+   */
+  async stream(
+    prompt: string,
+    context: Record<string, unknown> | undefined,
+    onChunk: (chunk: string) => void
+  ): Promise<void> {
+    // Qwen doesn't support streaming - simulate by sending entire response at once
+    const response = await this.invoke(prompt, context);
+    onChunk(response);
   }
 }

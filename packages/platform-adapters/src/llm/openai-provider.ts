@@ -6,6 +6,7 @@
 
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
+
 import type { ILLMProvider, LLMConfig } from './llm-provider.js';
 
 const execAsync = promisify(exec);
@@ -35,10 +36,7 @@ export class OpenAIProvider implements ILLMProvider {
    * @param context - Additional context
    * @returns Promise resolving to generated response
    */
-  async invoke(
-    prompt: string,
-    context?: Record<string, unknown>
-  ): Promise<string> {
+  async invoke(prompt: string, context?: Record<string, unknown>): Promise<string> {
     try {
       // Use OpenAI CLI if available
       const cliArgs = ['--model', this.model];
@@ -71,10 +69,7 @@ export class OpenAIProvider implements ILLMProvider {
   /**
    * Mock invocation for testing/development
    */
-  private mockInvoke(
-    prompt: string,
-    context?: Record<string, unknown>
-  ): string {
+  private mockInvoke(prompt: string, context?: Record<string, unknown>): string {
     return `Mock GPT-4 response to: "${prompt.substring(0, 50)}..."${
       context ? ` (context: ${Object.keys(context).join(', ')})` : ''
     }`;
@@ -93,20 +88,93 @@ export class OpenAIProvider implements ILLMProvider {
    * @param prompt - Input prompt
    * @param context - Additional context
    * @param onChunk - Callback for each chunk
+   *
+   * Real implementation with OpenAI SDK:
+   * ```typescript
+   * import OpenAI from 'openai';
+   *
+   * const client = new OpenAI({ apiKey: this.config.apiKey });
+   * const stream = await client.chat.completions.create({
+   *   model: this.model,
+   *   max_tokens: this.config.maxTokens || 4096,
+   *   temperature: this.config.temperature || 0.7,
+   *   messages: [
+   *     ...(context ? [{ role: 'system', content: JSON.stringify(context) }] : []),
+   *     { role: 'user', content: prompt }
+   *   ],
+   *   stream: true,
+   * });
+   *
+   * for await (const chunk of stream) {
+   *   const content = chunk.choices[0]?.delta?.content;
+   *   if (content) onChunk(content);
+   * }
+   * ```
    */
   async stream(
     prompt: string,
     context: Record<string, unknown> | undefined,
     onChunk: (chunk: string) => void
   ): Promise<void> {
-    // NOTE: Real implementation would use OpenAI SDK with streaming
-    // For now, simulate streaming
-    const response = await this.invoke(prompt, context);
-    const chunks = response.split(' ');
-
-    for (const chunk of chunks) {
-      onChunk(chunk + ' ');
-      await new Promise((resolve) => setTimeout(resolve, 10));
+    // Check if we have API key for real streaming
+    if (this.config.apiKey && typeof this.config.apiKey === 'string') {
+      try {
+        // Try to use OpenAI SDK if available
+        await this.streamWithSDK(prompt, context, onChunk);
+        return;
+      } catch (error) {
+        // Fall through to mock streaming
+        console.warn('[openai-provider] SDK streaming failed, using mock mode:', error);
+      }
     }
+
+    // Fallback: Simulate streaming by chunking the response
+    const response = await this.invoke(prompt, context);
+    const words = response.split(/(\s+)/); // Preserve whitespace
+
+    for (const word of words) {
+      if (word.length > 0) {
+        onChunk(word);
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+    }
+  }
+
+  /**
+   * Stream with OpenAI SDK (placeholder for actual implementation)
+   * @private
+   */
+  private streamWithSDK(
+    _prompt: string,
+    _context: Record<string, unknown> | undefined,
+    _onChunk: (chunk: string) => void
+  ): Promise<void> {
+    // This method would use the actual OpenAI SDK
+    // For now, throw to trigger fallback to mock streaming
+    return Promise.reject(new Error('OpenAI SDK not available - install openai'));
+
+    /*
+     * Real implementation (uncomment when SDK is installed):
+     *
+     * import OpenAI from 'openai';
+     *
+     * const client = new OpenAI({ apiKey: this.config.apiKey });
+     *
+     * const stream = await client.chat.completions.create({
+     *   model: this.model,
+     *   max_tokens: this.config.maxTokens || 4096,
+     *   temperature: this.config.temperature || 0.7,
+     *   messages: [
+     *     ...(_context ? [{ role: 'system', content: JSON.stringify(_context) }] : []),
+     *     { role: 'user', content: _prompt }
+     *   ],
+     *   stream: true,
+     * });
+     *
+     * for await (const chunk of stream) {
+     *   const content = chunk.choices[0]?.delta?.content;
+     *   if (content) _onChunk(content);
+     * }
+     */
   }
 }
